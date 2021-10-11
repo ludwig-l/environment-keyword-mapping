@@ -1,3 +1,4 @@
 wikipediaapi
 nltk
 re
+GoogleNews
