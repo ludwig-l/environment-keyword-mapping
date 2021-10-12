@@ -1,4 +1,4 @@
-# testing with retrieval from google news and stuff ...
+# testing with retrieval from google news and stuff ... (point number 9 on the list)
 
 # docs: https://pypi.org/project/GoogleNews/
 
@@ -12,10 +12,7 @@ googlenews = GoogleNews(start=start_date, end=end_date)
 # retrieve some news
 googlenews.get_news('nature')
 news = googlenews.get_texts() # extract all titles of the search results
-print(news)
-
-# select one specific page
-# print(googlenews.results()[0])
+print(news, '\nLength:', len(news))
 
 
 """
@@ -26,3 +23,37 @@ observations:
 -   the project description only says "retrieve documents for each keyword", so maybe that is
     our choice then (if titles only or full text of the articles)
 """
+
+
+# now let's try to put the news results into a data construct
+
+# define the time periods of interest
+time_periods = [('01/01/2010', '12/31/2010'),
+                ('01/01/2015', '12/31/2015'),
+                ('01/01/2020', '12/31/2020'),
+                ('01/01/2021', '01/31/2021')]
+
+gnews = GoogleNews()
+data = [[] for _ in range(len(time_periods))] # create a list of n empty lists
+print('========\ndataframe:', data, '=========')
+for i, time_period in enumerate(time_periods):
+    # assign the list of news titles to the list of lists
+    gnews.clear()
+    gnews.set_time_range(time_period[0], time_period[1])
+    gnews.get_news('nature')
+    news = gnews.get_texts()
+    data[i] = news
+
+print('The data looks like:\n', data)
+
+print('===\nThe individual number of documents is:')
+for i, time_period in enumerate(time_periods):
+    print('-> Time period', time_periods[i], 'has length', len(data[i]))
+
+
+# seems like a just a list of lists is the easiest here (possible unequal amounts of documents per
+# time period is the challange here)
+
+# also it seems like the library only gives a maximum of 92 news articles regardless of the length
+# of the time periods (we need a few hundred documents for each time period if I understood it
+# correctly)
