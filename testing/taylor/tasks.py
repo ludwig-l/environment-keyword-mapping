@@ -163,6 +163,17 @@ def cosine_similarity():
     #dataSetII = [2, 54, 13, 15]
     #result = 1 - spatial.distance.cosine(dataSetI, dataSetII)
 
+### Wu and Palmer Wordnet calculations (Task 5A) ###
+
+def wu_palm_calculations():
+    print("wu and palmer wordnet calculations")
+
+### Vector reproducing similarity and correlation between similarities (Task 5B) ###
+
+def semantic_similarity_calculation():
+    print("vector creation then semantic similarity calculation")
+
+
 ### main ###
 
 setup()
@@ -181,3 +192,7 @@ corpus_creation(unprocessed_page)
 #corpus_creation(page_entities_list)
 #vectorizer()
 #cosine_similarity()
+
+# Task 5
+#wu_palm_calculations()
+#semantic_similarity_calculation()
