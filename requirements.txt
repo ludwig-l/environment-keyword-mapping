@@ -2,3 +2,5 @@ wikipediaapi
 nltk
 re
 GoogleNews
+matplotlib
+wordcloud
