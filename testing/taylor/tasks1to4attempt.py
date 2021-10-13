@@ -5,6 +5,7 @@ import requests
 import re
 import nltk
 import ssl
+from sklearn.feature_extraction.text import TfidfVectorizer
 
 try:
     _create_unverified_https_context = ssl._create_unverified_context
@@ -128,24 +129,39 @@ def corpus_creation(unprocessed_documents):
         # lemmatize
 
         document_tokens = document.split()
-        document_tokens = [nltk.stem.WordNetLemmatizer().lemmatize(word) for word in document_tokens]
-        document_tokens = [word for word in document_tokens if word not in (set(nltk.corpus.stopwords.words('english') and set(nltk.corpus.stopwords.word('french')))) ]
-        document_tokens = [word for word in document_tokens if len(word) > 2]
+        #document_tokens = [nltk.stem.WordNetLemmatizer().lemmatize(word) for word in document_tokens]
+        #document_tokens = [word for word in document_tokens if word not in (set(nltk.corpus.stopwords.words('english') and set(nltk.corpus.stopwords.word('french')))) ]
+        #document_tokens = [word for word in document_tokens if len(word) > 2]
         
         print(document_tokens)
         break
 
     return corpus
 
-### TfldfVectorizer creation (Task 2B, 3B, 4B) ###
+### TfidfVectorizer creation (Task 2B, 3B, 4B) ###
 
 def vectorizer():
-    print("tfldfVectorizer")
+    print("vectorizer")
+
+    # found here: https://towardsdatascience.com/natural-language-processing-feature-engineering-using-tf-idf-e8b9d00e7e76
+    #vectorizer = TfidfVectorizer()
+    #vectors = vectorizer.fit_transform([documentA, documentB, documentC])
+    #feature_names = vectorizer.get_feature_names()
+    #dense = vectors.todense()
+    #denselist = dense.tolist()
+    #df = pd.DataFrame(denselist, columns=feature_names)
 
 ### Calculate cosine similarity (Task 2C, 3C, 4C) ###
 
 def cosine_similarity():
-    print("cosine similarity")
+    print ("cosine similarity")
+
+    #https://stackoverflow.com/questions/18424228/cosine-similarity-between-2-number-lists
+    #from scipy import spatial
+
+    #dataSetI = [3, 45, 7, 2]
+    #dataSetII = [2, 54, 13, 15]
+    #result = 1 - spatial.distance.cosine(dataSetI, dataSetII)
 
 ### main ###
 
@@ -157,11 +173,11 @@ corpus_creation(unprocessed_page)
 #cosine_similarity()
 
 # Task 3
-corpus_creation(page_subsections)
+#corpus_creation(page_subsections)
 #vectorizer()
 #cosine_similarity()
 
 # Task 4
-corpus_creation(page_entities_list)
+#corpus_creation(page_entities_list)
 #vectorizer()
 #cosine_similarity()
