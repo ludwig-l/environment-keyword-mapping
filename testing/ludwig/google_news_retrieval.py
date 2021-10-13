@@ -3,6 +3,8 @@
 # docs: https://pypi.org/project/GoogleNews/
 
 from GoogleNews import GoogleNews
+from wordcloud import WordCloud
+import matplotlib.pyplot as plt
 
 # set up using a given time range
 start_date = '01/10/2021' # watch out for mm/dd/yyyy format
@@ -57,3 +59,14 @@ for i, time_period in enumerate(time_periods):
 # also it seems like the library only gives a maximum of 92 news articles regardless of the length
 # of the time periods (we need a few hundred documents for each time period if I understood it
 # correctly)
+
+
+# word cloud representation
+for i, time_period in enumerate(time_periods):
+    whole_str = ' '.join(data[i]) # join all the strings in the list to one string
+    wordcloud = WordCloud().generate(whole_str)
+    # plot
+    plt.imshow(wordcloud, interpolation='bilinear')
+    plt.title(time_period)
+    plt.axis('off')
+    plt.show()
