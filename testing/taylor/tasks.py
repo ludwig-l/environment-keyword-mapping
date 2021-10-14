@@ -125,6 +125,10 @@ def corpus_creation(unprocessed_documents):
         document = re.sub(r'\s+', ' ', document, flags=re.I)
         # remove any prefixed "b"
         document = re.sub(r'^b\s+', '', document)
+        # remove numbers that are out of year range 1900-2050
+        document = re.sub(r'')
+
+        print(document)
 
         # lemmatize
 
