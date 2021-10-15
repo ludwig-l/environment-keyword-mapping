@@ -4,3 +4,4 @@ re
 GoogleNews
 matplotlib
 wordcloud
+sklearn
