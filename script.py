@@ -134,63 +134,67 @@ def setup():
         ('environmentally_friendly', environmentally_friendly_entities_list)
     ])
 
-### Preprocessing, lemmatizing, and combining into a corpus (Task 2A, 3A, 4A) ###
+
+### Preprocessing and lemmatizing a single document ###
+
+def preprocess_and_lemmatize(document):
+            
+    corpus_part = ""
+
+    # preprocess
+
+    # to lowercase
+    document = document.lower()
+    # remove symbols/special characters
+    document = re.sub(r'\W', ' ', str(document))
+    # remove single characters
+    document = re.sub(r'\s+[a-zA-Z]\s+', ' ', document)
+    # remove single characters from the first characters
+    document = re.sub(r'\^[a-zA-Z]\s+', ' ', document)
+    # standardize number of spaces >1 space becomes 1 space
+    document = re.sub(r'\s+', ' ', document, flags=re.I)
+    # remove any prefixed "b"
+    document = re.sub(r'^b\s+', '', document)
+    # remove numbers that are not 20th or 21st century years
+    document = re.sub(r'\b(?!(\D\S*|[12][0-9]{3})\b)\S+\b', '', document)
+
+    # lemmatize
+
+    stemmer = WordNetLemmatizer()
+    english_stop = set(nltk.corpus.stopwords.words('english'))
+
+    tokens = document.split()
+    tokens = [stemmer.lemmatize(word) for word in tokens]
+    tokens = [word for word in tokens if word not in english_stop]
+    # keep words that are greater than 2 characters
+    tokens = [word for word in tokens if len(word) > 2]
+
+    processed_document = ' '.join(tokens)
+    corpus_part = corpus_part + processed_document
+
+    return corpus_part
+
+### Combining preprocessed and lemmatized documents into a corpus (Task 2A, 3A, 4A) ###
 
 def corpus_creation(unprocessed_documents):
     
     corpus = ""
 
-    value_types = [type(value) for value in page_subsections.values()]
-    is_not_string = 1
-    #for value in value_types:
-        #if not isinstance(value, str):
-            #is_not_string = 0
+    value_types = [type(value) for value in unprocessed_documents.values()]
+    print(value_types[0])
 
-    #if (is_not_string == 0):
-        #wow = {}
-#for key in page_subsections:
-    #for list in page_subsections[key]:
-        #wow = list.sections
-        #print(wow)
-
-    if (is_not_string == 1):
-
+    if value_types[0] == str:
         for key in unprocessed_documents:
             document = unprocessed_documents[key]
+            corpus = corpus + preprocess_and_lemmatize(document)
+    elif value_types[0] == OrderedDict:
+        print("in progress")
+    else:
+        for key in page_subsections:
+            for list in page_subsections[key]:
+                corpus = corpus + " " + preprocess_and_lemmatize(list.title)
 
-
-
-            # preprocess
-
-            # to lowercase
-            document = document.lower()
-            # remove symbols/special characters
-            document = re.sub(r'\W', ' ', str(document))
-            # remove single characters
-            document = re.sub(r'\s+[a-zA-Z]\s+', ' ', document)
-            # remove single characters from the first characters
-            document = re.sub(r'\^[a-zA-Z]\s+', ' ', document)
-            # standardize number of spaces >1 space becomes 1 space
-            document = re.sub(r'\s+', ' ', document, flags=re.I)
-            # remove any prefixed "b"
-            document = re.sub(r'^b\s+', '', document)
-            # remove numbers that are not 20th or 21st century years
-            document = re.sub(r'\b(?!(\D\S*|[12][0-9]{3})\b)\S+\b', '', document)
-
-            # lemmatize
-
-            stemmer = WordNetLemmatizer()
-            en_stop = set(nltk.corpus.stopwords.words('english'))
-
-            tokens = document.split()
-            tokens = [stemmer.lemmatize(word) for word in tokens]
-            tokens = [word for word in tokens if word not in en_stop]
-            # keep words that are greater than 2 characters
-            tokens = [word for word in tokens if len(word) > 2]
-
-            processed_document = ' '.join(tokens)
-            corpus = corpus + processed_document
-
+    print(corpus)
     return corpus
 
 ### TfidfVectorizer creation (Task 2B, 3B, 4B) ###
@@ -246,7 +250,7 @@ setup()
 #cosine_similarity()
 
 # Task 4
-#entity_list_corpus = corpus_creation(page_entities_list)
+entity_list_corpus = corpus_creation(page_entities_list)
 #print(entity_list_corpus)
 #vectorizer()
 #cosine_similarity()
