@@ -5,3 +5,4 @@ GoogleNews
 matplotlib
 wordcloud
 sklearn
+pynytimes
