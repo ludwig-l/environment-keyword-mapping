@@ -78,6 +78,8 @@ print('===\nWe have', len(articles), 'articles.\n===')
 
 # pre-process the documents
 list_of_articles = preprocess_text(list_of_articles)
+print('===\npre-processed text:\n', list_of_articles)
+
 
 # create wordcloud and plot it
 wordcloud = WordCloud().generate(list_of_articles)
