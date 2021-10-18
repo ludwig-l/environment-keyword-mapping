@@ -1,9 +1,13 @@
+import enum
 from pynytimes import NYTAPI
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
 import datetime
 import nltk
 import re
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+import pandas as pd
 
 
 # docs: https://pypi.org/project/pynytimes/#article-search
@@ -93,3 +97,22 @@ observations:
 * word cloud currently shows only some letter
 * we can also extract additional information, e.g. abstract and link to article
 """
+
+
+
+# use a TFIDF vectorizer on the document
+# (with pre-defined stuff for testing)
+
+doc = [
+    'Nature is great.',
+    'Super nature.',
+    'What is nature.',
+    'I hate nature!'
+]
+for i, data in enumerate(doc):
+    doc[i] = preprocess_text(data)
+print('===\nText', doc)
+
+vectorizer = TfidfVectorizer(analyzer='word')
+tfidf_matrix = vectorizer.fit_transform(doc)
+print('===\nThe TFIDF matrix:', tfidf_matrix.shape, '\n', tfidf_matrix)
