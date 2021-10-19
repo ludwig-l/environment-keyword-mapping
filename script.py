@@ -1,6 +1,4 @@
 from typing import OrderedDict
-import pandas as pd
-from itertools import combinations
 import wikipediaapi
 from bs4 import BeautifulSoup
 import requests
@@ -9,6 +7,9 @@ import nltk
 import ssl
 from sklearn.feature_extraction.text import TfidfVectorizer
 from nltk.stem import WordNetLemmatizer
+import pandas as pd
+from itertools import combinations
+from scipy import spatial
 
 # global variables to store results
 
@@ -228,19 +229,16 @@ def vectorizer(document_1, document_2):
     dense = vectors.todense()
     dense_list = dense.tolist()
     calculated_table = pd.DataFrame(dense_list, columns=document_words)
-    return calculated_table
+    #print(calculated_table)
+    return dense_list
 
 ### Calculate cosine similarity (Task 2C, 3C, 4C) ###
 
-def cosine_similarity():
-    print ("cosine similarity")
+def cosine_similarity(document_1, document_2):
 
-    #https://stackoverflow.com/questions/18424228/cosine-similarity-between-2-number-lists
-    #from scipy import spatial
-
-    #dataSetI = [3, 45, 7, 2]
-    #dataSetII = [2, 54, 13, 15]
-    #result = 1 - spatial.distance.cosine(dataSetI, dataSetII)
+    vectorizer = TfidfVectorizer()
+    vectors = vectorizer.fit_transform([document_1, document_2])
+    return ((vectors * vectors.T).A)[0,1]
 
 ### Wu and Palmer Wordnet calculations (Task 5A) ###
 
@@ -269,17 +267,22 @@ corpus_creation(page_entities_list, "keywords")
 #print(everything_corpus)   # combination of all documents into one corpus
 for pair in list(combinations(list(all_document_corpus), 2)):
     tfidf_results = vectorizer([all_document_corpus[pair[0]]], [all_document_corpus[pair[1]]])
-    cs_results = cosine_similarity()
+    #print(tfidf_results)
+    cosine_results = cosine_similarity(all_document_corpus[pair[0]], all_document_corpus[pair[1]])
 
 # Task 3: Repeat but with the titles of subsections
 for pair in list(combinations(list(subsections_corpus), 2)):
     tfidf_results = vectorizer([subsections_corpus[pair[0]]], [subsections_corpus[pair[1]]])
-    cs_results = cosine_similarity()
+    #print(tfidf_results)
+    cosine_results = cosine_similarity(subsections_corpus[pair[0]], subsections_corpus[pair[1]])
+    #print(cosine_results)
 
 # Task 4: Repeat but with the entity-categories
 for pair in list(combinations(list(entity_list_corpus), 2)):
     tfidf_results = vectorizer([entity_list_corpus[pair[0]]], [entity_list_corpus[pair[1]]])
-    cs_results = cosine_similarity()
+    #print(tfidf_results)
+    cosine_results = cosine_similarity(entity_list_corpus[pair[0]], entity_list_corpus[pair[1]])
+    #print(cosine_results)
 
 # Task 5
 #wu_palm_calculations()
