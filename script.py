@@ -7,6 +7,7 @@ import nltk
 import ssl
 from sklearn.feature_extraction.text import TfidfVectorizer
 from nltk.stem import WordNetLemmatizer
+from nltk.corpus import wordnet
 import pandas as pd
 from itertools import combinations
 from scipy import spatial
@@ -31,7 +32,7 @@ global entity_list_cosine_results
 
 everything_corpus = ""
 
-all_document_corpus = dict([])
+single_document_corpus = dict([])
 all_document_tfidf_results = {}
 all_document_cosine_results = {}
 
@@ -68,7 +69,7 @@ def setup():
         ('nature', wikipedia.page('Nature').text),
         ('pollution', wikipedia.page('pollution').text),
         ('sustainability', wikipedia.page('sustainability').text),
-        ('environmentally_friendly', wikipedia.page('environmentally friendly').text)
+        ('environmentally-friendly', wikipedia.page('environmentally friendly').text)
     ])
 
     global page_subsections 
@@ -76,7 +77,7 @@ def setup():
         ('nature', wikipedia.page('Nature').sections),
         ('pollution', wikipedia.page('pollution').sections),
         ('sustainability', wikipedia.page('sustainability').sections),
-        ('environmentally_friendly', wikipedia.page('environmentally friendly').sections)
+        ('environmentally-friendly', wikipedia.page('environmentally friendly').sections)
     ])
 
     # TAYLOR: wikipedia-api doesn't separate the references and is alphabetical, producing a messy list of links
@@ -138,7 +139,7 @@ def setup():
         ('nature', nature_entities_list),
         ('pollution', pollution_entities_list),
         ('sustainability', sustainability_entities_list),
-        ('environmentally_friendly', environmentally_friendly_entities_list)
+        ('environmentally-friendly', environmentally_friendly_entities_list)
     ])
 
 
@@ -203,7 +204,7 @@ def corpus_creation(unprocessed_documents, type):
         for key in unprocessed_documents:
             document = unprocessed_documents[key]
             corpus = corpus + preprocess_and_lemmatize(document)
-            all_document_corpus[key]= corpus
+            single_document_corpus[key]= corpus
     elif type == "subsections":
         for key in page_subsections:
             for list in page_subsections[key]:
@@ -216,7 +217,7 @@ def corpus_creation(unprocessed_documents, type):
                 corpus = corpus + " " + preprocess_and_lemmatize(title)
             entity_list_corpus[key] = corpus
     
-    everything_corpus = corpus
+    all_document_corpus = corpus
 
 ### TfidfVectorizer creation (Task 2B, 3B, 4B) ###
 
@@ -240,10 +241,14 @@ def cosine_similarity(document_1, document_2):
     vectors = vectorizer.fit_transform([document_1, document_2])
     return ((vectors * vectors.T).A)[0,1]
 
-### Wu and Palmer Wordnet calculations (Task 5A) ###
+### WuPalmer Wordnet calculations (Task 5A) ###
 
-def wu_palm_calculations():
-    print("wu and palmer wordnet calculations")
+def calculate_wupalmer(word_1, word_2):
+    print(word_1, word_2)
+    syn_1 = wordnet.synsets(word_1)[0]
+    syn_2 = wordnet.synsets(word_2)[0]
+    wupalmer_similarity = syn_1.wup_similarity(syn_2)
+    return wupalmer_similarity
 
 ### Vector reproducing similarity and correlation between similarities (Task 5B) ###
 
@@ -265,10 +270,10 @@ corpus_creation(page_subsections, "subsections")
 corpus_creation(page_entities_list, "keywords")
 #print(entity_list_corpus['nature'])
 #print(everything_corpus)   # combination of all documents into one corpus
-for pair in list(combinations(list(all_document_corpus), 2)):
-    tfidf_results = vectorizer([all_document_corpus[pair[0]]], [all_document_corpus[pair[1]]])
+for pair in list(combinations(list(single_document_corpus), 2)):
+    tfidf_results = vectorizer([single_document_corpus[pair[0]]], [single_document_corpus[pair[1]]])
     #print(tfidf_results)
-    cosine_results = cosine_similarity(all_document_corpus[pair[0]], all_document_corpus[pair[1]])
+    cosine_results = cosine_similarity(single_document_corpus[pair[0]], single_document_corpus[pair[1]])
 
 # Task 3: Repeat but with the titles of subsections
 for pair in list(combinations(list(subsections_corpus), 2)):
@@ -284,8 +289,10 @@ for pair in list(combinations(list(entity_list_corpus), 2)):
     cosine_results = cosine_similarity(entity_list_corpus[pair[0]], entity_list_corpus[pair[1]])
     #print(cosine_results)
 
-# Task 5
-#wu_palm_calculations()
+# Task 5: Calculate wu and Palmer WordNet semantic similarity, write a vector representing that similarity,
+# and calculate the correlation between the semantic similarity and the wikipedia based similarity
+
+
 #semantic_similarity_calculation()
 
 # Task 6
