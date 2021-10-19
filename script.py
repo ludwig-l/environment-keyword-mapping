@@ -12,6 +12,8 @@ from nltk.stem import WordNetLemmatizer
 
 # global variables to store results
 
+global everything_corpus
+
 global all_document_corpus
 global all_document_tfidf_results
 global all_document_cosine_results
@@ -25,6 +27,8 @@ global entity_list_tfidf_results
 global entity_list_cosine_results
 
 # initialize global variables
+
+everything_corpus = ""
 
 all_document_corpus = dict([])
 all_document_tfidf_results = {}
@@ -176,16 +180,15 @@ def preprocess_and_lemmatize(document):
 
     return corpus_part
 
-
 ### Use recursion to get the wikipedia sections ###
 
 def get_sections(sections, level=0):
     
     all_sections = ""
 
-    for s in sections:
-                   all_sections = all_sections + s.title + " "
-                   get_sections(s.sections, level + 1)
+    for section in sections:
+                   all_sections = all_sections + section.title + " "
+                   get_sections(section.sections, level + 1)
 
     return all_sections
 
@@ -211,6 +214,8 @@ def corpus_creation(unprocessed_documents, type):
             for title in page_entities_list[key]:
                 corpus = corpus + " " + preprocess_and_lemmatize(title)
             entity_list_corpus[key] = corpus
+    
+    everything_corpus = corpus
 
 ### TfidfVectorizer creation (Task 2B, 3B, 4B) ###
 
@@ -219,11 +224,11 @@ def vectorizer(document_1, document_2):
     # found here: https://towardsdatascience.com/natural-language-processing-feature-engineering-using-tf-idf-e8b9d00e7e76
     vectorizer = TfidfVectorizer()
     vectors = vectorizer.fit_transform(document_1, document_2)
-    feature_names = vectorizer.get_feature_names_out()
+    document_words = vectorizer.get_feature_names_out()
     dense = vectors.todense()
-    denselist = dense.tolist()
-    df = pd.DataFrame(denselist, columns=feature_names)
-    return df
+    dense_list = dense.tolist()
+    calculated_table = pd.DataFrame(dense_list, columns=document_words)
+    return calculated_table
 
 ### Calculate cosine similarity (Task 2C, 3C, 4C) ###
 
@@ -248,39 +253,53 @@ def semantic_similarity_calculation():
     print("vector creation then semantic similarity calculation")
 
 
+
 ### main ###
 
+# Task 1: Get unprocessed pages, subsections, and list of entities (clickable keywords except reference list)
 setup()
 
-# Task 2
-#corpus_creation(unprocessed_page, "pages")
+# Task 2: Create combined corpus, as well as separate corpuses to do TFIDF and cosine similarity
+corpus_creation(unprocessed_page, "pages")
 #print(all_document_corpus['nature'])
-#for pair in list(combinations(list(all_document_corpus), 2)):
-#    print("### Pair is: %s and %s ###" %(pair[0], pair[1]))
-#    results = vectorizer([all_document_corpus[pair[0]]], [all_document_corpus[pair[1]]])
-#    print(results)
-
-#cosine_similarity()
-
-# Task 3
-#corpus_creation(page_subsections, "subsections")
+corpus_creation(page_subsections, "subsections")
 #print(subsections_corpus['nature'])
-#for pair in list(combinations(list(subsections_corpus), 2)):
-#    print("### Pair is: %s and %s ###" %(pair[0], pair[1]))
-#    results = vectorizer([subsections_corpus[pair[0]]], [subsections_corpus[pair[1]]])
-#    print(results)
-
-#cosine_similarity()
-
-# Task 4
 corpus_creation(page_entities_list, "keywords")
 #print(entity_list_corpus['nature'])
+#print(everything_corpus)   # combination of all documents into one corpus
+for pair in list(combinations(list(all_document_corpus), 2)):
+    tfidf_results = vectorizer([all_document_corpus[pair[0]]], [all_document_corpus[pair[1]]])
+    cs_results = cosine_similarity()
+
+# Task 3: Repeat but with the titles of subsections
+for pair in list(combinations(list(subsections_corpus), 2)):
+    tfidf_results = vectorizer([subsections_corpus[pair[0]]], [subsections_corpus[pair[1]]])
+    cs_results = cosine_similarity()
+
+# Task 4: Repeat but with the entity-categories
 for pair in list(combinations(list(entity_list_corpus), 2)):
-    print("### Pair is: %s and %s ###" %(pair[0], pair[1]))
-    results = vectorizer([entity_list_corpus[pair[0]]], [entity_list_corpus[pair[1]]])
-    print(results)
-#cosine_similarity()
+    tfidf_results = vectorizer([entity_list_corpus[pair[0]]], [entity_list_corpus[pair[1]]])
+    cs_results = cosine_similarity()
 
 # Task 5
 #wu_palm_calculations()
 #semantic_similarity_calculation()
+
+# Task 6
+# scrap content
+# retrieve clickable keywords using first pass exploration
+
+# Task 7 (repeat)
+# repeat use of tfidf and cosine functions
+
+# Task 8
+# word2vec
+
+# Task 9
+# news keywords
+
+# Task 10 (repeat)
+# repeat use of tfidf
+
+# Task 12
+# suggest a GUI
