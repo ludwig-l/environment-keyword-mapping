@@ -1,4 +1,6 @@
 from typing import OrderedDict
+import pandas as pd
+from itertools import combinations
 import wikipediaapi
 from bs4 import BeautifulSoup
 import requests
@@ -24,15 +26,15 @@ global entity_list_cosine_results
 
 # initialize global variables
 
-all_document_corpus = ""
+all_document_corpus = dict([])
 all_document_tfidf_results = {}
 all_document_cosine_results = {}
 
-subsections_corpus = ""
+subsections_corpus = dict([])
 subsections_tfidf_results = {}
 subsections_cosine_results = {}
 
-entity_list_corpus = ""
+entity_list_corpus = dict([])
 entity_list_tfidf_results = {}
 entity_list_cosine_results = {}
 
@@ -182,8 +184,7 @@ def get_sections(sections, level=0):
     all_sections = ""
 
     for s in sections:
-                   #print("%s:%s-%s" % ("*"*(level + 1), s.title, s.text[0:40]))
-                   all_sections = all_sections + s.title + " " + s.text + " "
+                   all_sections = all_sections + s.title + " "
                    get_sections(s.sections, level + 1)
 
     return all_sections
@@ -198,30 +199,31 @@ def corpus_creation(unprocessed_documents, type):
         for key in unprocessed_documents:
             document = unprocessed_documents[key]
             corpus = corpus + preprocess_and_lemmatize(document)
+            all_document_corpus[key]= corpus
     elif type == "subsections":
         for key in page_subsections:
             for list in page_subsections[key]:
                 all_sections = get_sections(list.sections)
                 corpus = corpus + " " + preprocess_and_lemmatize(all_sections)
+            subsections_corpus[key] = corpus
     else:
         for key in page_entities_list:
             for title in page_entities_list[key]:
                 corpus = corpus + " " + preprocess_and_lemmatize(title)
-
-    return corpus
+            entity_list_corpus[key] = corpus
 
 ### TfidfVectorizer creation (Task 2B, 3B, 4B) ###
 
-def vectorizer():
-    print("vectorizer")
+def vectorizer(document_1, document_2):
 
     # found here: https://towardsdatascience.com/natural-language-processing-feature-engineering-using-tf-idf-e8b9d00e7e76
-    #vectorizer = TfidfVectorizer()
-    #vectors = vectorizer.fit_transform([documentA, documentB, documentC])
-    #feature_names = vectorizer.get_feature_names()
-    #dense = vectors.todense()
-    #denselist = dense.tolist()
-    #df = pd.DataFrame(denselist, columns=feature_names)
+    vectorizer = TfidfVectorizer()
+    vectors = vectorizer.fit_transform(document_1, document_2)
+    feature_names = vectorizer.get_feature_names_out()
+    dense = vectors.todense()
+    denselist = dense.tolist()
+    df = pd.DataFrame(denselist, columns=feature_names)
+    return df
 
 ### Calculate cosine similarity (Task 2C, 3C, 4C) ###
 
@@ -251,21 +253,32 @@ def semantic_similarity_calculation():
 setup()
 
 # Task 2
-#all_document_corpus = corpus_creation(unprocessed_page, "pages")
-#print(all_document_corpus)
-#vectorizer(all_document_corpus)
+#corpus_creation(unprocessed_page, "pages")
+#print(all_document_corpus['nature'])
+#for pair in list(combinations(list(all_document_corpus), 2)):
+#    print("### Pair is: %s and %s ###" %(pair[0], pair[1]))
+#    results = vectorizer([all_document_corpus[pair[0]]], [all_document_corpus[pair[1]]])
+#    print(results)
+
 #cosine_similarity()
 
 # Task 3
-#subsection_corpus = corpus_creation(page_subsections, "subsections")
-#print(subsections_corpus)
-#vectorizer()
+#corpus_creation(page_subsections, "subsections")
+#print(subsections_corpus['nature'])
+#for pair in list(combinations(list(subsections_corpus), 2)):
+#    print("### Pair is: %s and %s ###" %(pair[0], pair[1]))
+#    results = vectorizer([subsections_corpus[pair[0]]], [subsections_corpus[pair[1]]])
+#    print(results)
+
 #cosine_similarity()
 
 # Task 4
-#entity_list_corpus = corpus_creation(page_entities_list, "keywords")
-#print(entity_list_corpus)
-#vectorizer()
+corpus_creation(page_entities_list, "keywords")
+#print(entity_list_corpus['nature'])
+for pair in list(combinations(list(entity_list_corpus), 2)):
+    print("### Pair is: %s and %s ###" %(pair[0], pair[1]))
+    results = vectorizer([entity_list_corpus[pair[0]]], [entity_list_corpus[pair[1]]])
+    print(results)
 #cosine_similarity()
 
 # Task 5
