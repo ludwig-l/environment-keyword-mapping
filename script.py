@@ -174,27 +174,40 @@ def preprocess_and_lemmatize(document):
 
     return corpus_part
 
+
+### Use recursion to get the wikipedia sections ###
+
+def get_sections(sections, level=0):
+    
+    all_sections = ""
+
+    for s in sections:
+                   #print("%s:%s-%s" % ("*"*(level + 1), s.title, s.text[0:40]))
+                   all_sections = all_sections + s.title + " " + s.text + " "
+                   get_sections(s.sections, level + 1)
+
+    return all_sections
+
 ### Combining preprocessed and lemmatized documents into a corpus (Task 2A, 3A, 4A) ###
 
-def corpus_creation(unprocessed_documents):
+def corpus_creation(unprocessed_documents, type):
     
     corpus = ""
-
-    value_types = [type(value) for value in unprocessed_documents.values()]
-    print(value_types[0])
-
-    if value_types[0] == str:
+    
+    if type == "pages":
         for key in unprocessed_documents:
             document = unprocessed_documents[key]
             corpus = corpus + preprocess_and_lemmatize(document)
-    elif value_types[0] == OrderedDict:
-        print("in progress")
-    else:
+    elif type == "subsections":
         for key in page_subsections:
             for list in page_subsections[key]:
-                corpus = corpus + " " + preprocess_and_lemmatize(list.title)
+                all_sections = get_sections(list.sections)
+                corpus = corpus + " " + preprocess_and_lemmatize(all_sections)
+    else:
+        for key in page_entities_list:
+            for title in page_entities_list[key]:
+                corpus = corpus + " " + preprocess_and_lemmatize(title)
 
-    print(corpus)
     return corpus
 
 ### TfidfVectorizer creation (Task 2B, 3B, 4B) ###
@@ -238,19 +251,19 @@ def semantic_similarity_calculation():
 setup()
 
 # Task 2
-#all_document_corpus = corpus_creation(unprocessed_page)
+#all_document_corpus = corpus_creation(unprocessed_page, "pages")
 #print(all_document_corpus)
 #vectorizer(all_document_corpus)
 #cosine_similarity()
 
 # Task 3
-#subsection_corpus = corpus_creation(page_subsections)
+#subsection_corpus = corpus_creation(page_subsections, "subsections")
 #print(subsections_corpus)
 #vectorizer()
 #cosine_similarity()
 
 # Task 4
-entity_list_corpus = corpus_creation(page_entities_list)
+#entity_list_corpus = corpus_creation(page_entities_list, "keywords")
 #print(entity_list_corpus)
 #vectorizer()
 #cosine_similarity()
