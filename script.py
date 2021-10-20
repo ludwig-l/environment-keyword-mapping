@@ -83,8 +83,7 @@ def setup():
         ('environmentally_friendly', wikipedia.page('environmentally friendly').sections)
     ])
 
-    # TAYLOR: wikipedia-api doesn't separate the references and is alphabetical, producing a messy list of links
-    # TAYLOR: decided to use beautiful soup as an alternative
+    # scrape clickable keywords without references
 
     # nature
     page_request = requests.get("https://en.wikipedia.org/wiki/Nature")
@@ -252,6 +251,16 @@ def calculate_wupalmer(word_1, word_2):
     wupalmer_similarity = syn_1.wup_similarity(syn_2)
     return wupalmer_similarity
 
+### Scrape entity-categories from already found entity-categories (Task 6) ###
+
+def entity_category_scraper(entity_category):
+    page_request = requests.get("https://en.wikipedia.org/wiki/" + entity_category)
+    beautiful_soup = BeautifulSoup(page_request.text, "html.parser")
+    page_entity_categories = []
+    for link in beautiful_soup.find_all("a"):
+        page_entity_categories.append(link.get("title", ""))
+    return page_entity_categories
+
 ### main ###
 
 # Task 1: Get unprocessed pages, subsections, and list of entities (clickable keywords except reference list)
@@ -296,9 +305,11 @@ wu_wiki_correlation = pearsonr(all_wupalmer_results, all_cosine_results)
 # first value is the pearson's correlation coefficient, second value is the two-tailed p-value
 print(wu_wiki_correlation)
 
-# Task 6
-# scrap content
-# retrieve clickable keywords using first pass exploration
+# Task 6: Scrape content of each entity and retrieve all clickable keywords identified
+
+
+entity_category_scraper
+
 
 # Task 7
 # repeat on the stuff from task 6
