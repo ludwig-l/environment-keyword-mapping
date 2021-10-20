@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import datetime
 import nltk
 import re
-from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.feature_extraction.text import TfidfTransformer, TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import pandas as pd
 
@@ -105,14 +105,29 @@ observations:
 
 doc = [
     'Nature is great.',
-    'Super nature.',
-    'What is nature.',
-    'I hate nature!'
+    'Super stone.',
+    'What is fire.',
+    'I hate water!'
 ]
 for i, data in enumerate(doc):
     doc[i] = preprocess_text(data)
 print('===\nText', doc)
 
-vectorizer = TfidfVectorizer(analyzer='word')
-tfidf_matrix = vectorizer.fit_transform(doc)
-print('===\nThe TFIDF matrix:', tfidf_matrix.shape, '\n', tfidf_matrix)
+# vectorizer = TfidfVectorizer(analyzer='word')
+# tfidf_matrix = vectorizer.fit_transform(doc)
+# print('===\nTfIdf feature names:\n', vectorizer.get_feature_names_out())
+# print('===\nThe TFIDF matrix:', tfidf_matrix.shape, '\n', tfidf_matrix)
+# transformer = TfidfTransformer()
+# tfidf_list = TfidfTransformer.fit_transform(tfidf_matrix)
+# print('===\nTransformed list:\n', tfidf_list)
+
+vectorizer = TfidfVectorizer()
+vectors = vectorizer.fit_transform(doc)
+feature_names = vectorizer.get_feature_names()
+dense = vectors.todense()
+denselist = dense.tolist()
+df = pd.DataFrame(denselist, columns=feature_names)
+print('===\nTfIdf-Dataframe:\n', df)
+transformer = TfidfTransformer()
+# tfidf_list = TfidfTransformer.fit_transform(df)
+# print('===\nTransformed list:\n', tfidf_list)
