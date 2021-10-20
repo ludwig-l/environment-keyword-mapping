@@ -2,6 +2,8 @@
 
 import datetime
 from pynytimes import NYTAPI
+from sklearn.feature_extraction.text import TfidfTransformer, TfidfVectorizer
+import pandas as pd
 
 """
 The plan:
@@ -15,45 +17,132 @@ The plan:
 """
 
 
-# keywords
-from datetime import datetime
+# data structure for storing all
+data  = {
+    'nature' : {
+        '2000' : {
+            'titles' : [],
+            'urls' : []
+        },
+        '2010' : {
+            'titles' : [],
+            'urls' : []
+        },
+        '2020' : {
+            'titles' : [],
+            'urls' : []
+        },
+    },
+    'pollution' : {
+        '2000' : {
+            'titles' : [],
+            'urls' : []
+        },
+        '2010' : {
+            'titles' : [],
+            'urls' : []
+        },
+        '2020' : {
+            'titles' : [],
+            'urls' : []
+        }
+    },
+    'sustainability' : {
+        '2000' : {
+            'titles' : [],
+            'urls' : [],
+        },
+        '2010' : {
+            'titles' : [],
+            'urls' : []
+        },
+        '2020' : {
+            'titles' : [],
+            'urls' : []
+        }
+    },
+    'environmentally friendly' : {
+        '2000' : {
+            'titles' : [],
+            'urls' : []
+        },
+        '2010' : {
+            'titles' : [],
+            'urls' : []
+        },
+        '2020' : {
+            'titles' : [],
+            'urls' : []
+        }
+    }
+}
 
-
-keywords = [
-    'nature', 'pollution', 'sustainability', 'environmentally friendly'
-]
-
-# time periods
-time_periods = [
-    (datetime.datetime(2000, 1, 1), datetime.datetime(2000, 12, 31)),
-    (datetime.datetime(2010, 1, 1), datetime.datetime(2010, 12, 31)),
-    (datetime.datetime(2020, 1, 1), datetime.datetime(2020, 12, 31)),
-]
 
 # definitions for the news forum API
 api_key = ''
 with open('nytimes_api_key.txt', 'r') as file:
     api_key = file.read()
 nyt = NYTAPI(key=api_key, parse_dates=True)
-n_articles = 100 # number of articles to retrieve with each API call
+n_articles = 10 # number of articles to retrieve with each API call
+
 
 # retrieve the articles
-# articles = [[], []]
-for i, keyword in enumerate(keywords):
-    for j, time_period in enumerate(time_periods):
+for keyword in data:
+    print(keyword)
+    for year in data[keyword]:
+        print('---', year)
+        #for year, year_vals in keyword_vals.items():
+        #    print('test:', year, type(year), year_vals, type(year_vals))
+        #    print('---', year_vals['title'])
+        #    print('---', year_vals['url'])
+        #print('---', articles[keyword][year]['url'])
+        #print('---', articles[keyword][year])
+        #for data in articles[keyword][year].items():
 
-    article = nyt.article_search(
-        query = keyword,
-        results = n_articles,
-        dates = {
-            'begin': time_period[0],
-            'end': time_period[1]
-        },
-        options = {
-            'sort': 'relevance',
-            'sources': 'New York Times'
-        }
-    )
+        # define the two needed datetime objects
+        date_begin = datetime.datetime.fromisoformat(year + '-01-01')
+        date_end = datetime.datetime.fromisoformat(year + '-12-31')
 
-    # at this point the article has to be filtered out of all the different data and saved
-    # in a proper data structure (use maybe a nested list or a dict here?)
+        retrieved_articles = nyt.article_search(
+            query = keyword,
+            results = n_articles,
+            dates = {
+                'begin': date_begin,
+                'end': date_end
+            },
+            options = {
+                'sort': 'relevance',
+                'sources': 'New York Times'
+            }
+        )
+
+        # collect data of interest
+        for i, article_data in enumerate(retrieved_articles):
+            data[keyword][year]['titles'].append(article_data['headline']['main'])
+            data[keyword][year]['urls'].append(article_data['web_url'])
+
+
+
+# print all the stuff
+print('===\nHere is the stuff you wanted:\n', data)
+
+
+# here do some kind of pre-processing
+
+
+# here will be the word cloud representation
+
+
+# test the TfIdf functionality on one data set
+vectorizer = TfidfVectorizer()
+vectors = vectorizer.fit_transform([
+    # use only the 'nature' keyword here
+    ' '.join(data['nature']['2000']['titles']),
+    ' '.join(data['nature']['2010']['titles']),
+    ' '.join(data['nature']['2020']['titles'])
+])
+feature_names = vectorizer.get_feature_names_out()
+dense = vectors.todense()
+denselist = dense.tolist()
+df = pd.DataFrame(denselist, columns=feature_names)
+print('===\nTfIdf-Dataframe:\n', df)
