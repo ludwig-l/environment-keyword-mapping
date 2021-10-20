@@ -90,19 +90,14 @@ n_articles = 10 # number of articles to retrieve with each API call
 for keyword in data:
     print(keyword)
     for year in data[keyword]:
-        print('---', year)
-        #for year, year_vals in keyword_vals.items():
-        #    print('test:', year, type(year), year_vals, type(year_vals))
-        #    print('---', year_vals['title'])
-        #    print('---', year_vals['url'])
-        #print('---', articles[keyword][year]['url'])
-        #print('---', articles[keyword][year])
-        #for data in articles[keyword][year].items():
+
+        print('---', year) # progress information
 
         # define the two needed datetime objects
         date_begin = datetime.datetime.fromisoformat(year + '-01-01')
         date_end = datetime.datetime.fromisoformat(year + '-12-31')
 
+        # API call for the desired information
         retrieved_articles = nyt.article_search(
             query = keyword,
             results = n_articles,
@@ -120,7 +115,6 @@ for keyword in data:
         for i, article_data in enumerate(retrieved_articles):
             data[keyword][year]['titles'].append(article_data['headline']['main'])
             data[keyword][year]['urls'].append(article_data['web_url'])
-
 
 
 # print all the stuff
