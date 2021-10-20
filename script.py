@@ -1,4 +1,6 @@
+import array
 from typing import OrderedDict
+from numpy import single
 import wikipediaapi
 from bs4 import BeautifulSoup
 import requests
@@ -11,6 +13,7 @@ from nltk.corpus import wordnet
 import pandas as pd
 from itertools import combinations
 from scipy import spatial
+from scipy.stats import pearsonr
 
 # global variables to store results
 
@@ -69,7 +72,7 @@ def setup():
         ('nature', wikipedia.page('Nature').text),
         ('pollution', wikipedia.page('pollution').text),
         ('sustainability', wikipedia.page('sustainability').text),
-        ('environmentally-friendly', wikipedia.page('environmentally friendly').text)
+        ('environmentally_friendly', wikipedia.page('environmentally friendly').text)
     ])
 
     global page_subsections 
@@ -77,7 +80,7 @@ def setup():
         ('nature', wikipedia.page('Nature').sections),
         ('pollution', wikipedia.page('pollution').sections),
         ('sustainability', wikipedia.page('sustainability').sections),
-        ('environmentally-friendly', wikipedia.page('environmentally friendly').sections)
+        ('environmentally_friendly', wikipedia.page('environmentally friendly').sections)
     ])
 
     # TAYLOR: wikipedia-api doesn't separate the references and is alphabetical, producing a messy list of links
@@ -139,7 +142,7 @@ def setup():
         ('nature', nature_entities_list),
         ('pollution', pollution_entities_list),
         ('sustainability', sustainability_entities_list),
-        ('environmentally-friendly', environmentally_friendly_entities_list)
+        ('environmentally_friendly', environmentally_friendly_entities_list)
     ])
 
 
@@ -230,8 +233,7 @@ def vectorizer(document_1, document_2):
     dense = vectors.todense()
     dense_list = dense.tolist()
     calculated_table = pd.DataFrame(dense_list, columns=document_words)
-    #print(calculated_table)
-    return dense_list
+    return calculated_table
 
 ### Calculate cosine similarity (Task 2C, 3C, 4C) ###
 
@@ -246,16 +248,9 @@ def cosine_similarity(document_1, document_2):
 def calculate_wupalmer(word_1, word_2):
     print(word_1, word_2)
     syn_1 = wordnet.synsets(word_1)[0]
-    syn_2 = wordnet.synsets(word_2)[0]
+    syn_2 = wordnet.synsets('environmentally')[0]
     wupalmer_similarity = syn_1.wup_similarity(syn_2)
     return wupalmer_similarity
-
-### Vector reproducing similarity and correlation between similarities (Task 5B) ###
-
-def semantic_similarity_calculation():
-    print("vector creation then semantic similarity calculation")
-
-
 
 ### main ###
 
@@ -270,10 +265,12 @@ corpus_creation(page_subsections, "subsections")
 corpus_creation(page_entities_list, "keywords")
 #print(entity_list_corpus['nature'])
 #print(everything_corpus)   # combination of all documents into one corpus
+all_cosine_results = array.array('d', [])
 for pair in list(combinations(list(single_document_corpus), 2)):
     tfidf_results = vectorizer([single_document_corpus[pair[0]]], [single_document_corpus[pair[1]]])
     #print(tfidf_results)
-    cosine_results = cosine_similarity(single_document_corpus[pair[0]], single_document_corpus[pair[1]])
+    all_cosine_results.append(cosine_similarity(single_document_corpus[pair[0]], single_document_corpus[pair[1]]))
+#print(all_cosine_results)
 
 # Task 3: Repeat but with the titles of subsections
 for pair in list(combinations(list(subsections_corpus), 2)):
@@ -291,16 +288,20 @@ for pair in list(combinations(list(entity_list_corpus), 2)):
 
 # Task 5: Calculate wu and Palmer WordNet semantic similarity, write a vector representing that similarity,
 # and calculate the correlation between the semantic similarity and the wikipedia based similarity
-
-
-#semantic_similarity_calculation()
+pair_words = ['nature', 'pollution', 'sustainability', 'environmentally']
+all_wupalmer_results = array.array('d', [])
+for pair in combinations(pair_words, 2):
+    all_wupalmer_results.append(calculate_wupalmer(pair[0], pair[1]))
+wu_wiki_correlation = pearsonr(all_wupalmer_results, all_cosine_results)
+# first value is the pearson's correlation coefficient, second value is the two-tailed p-value
+print(wu_wiki_correlation)
 
 # Task 6
 # scrap content
 # retrieve clickable keywords using first pass exploration
 
-# Task 7 (repeat)
-# repeat use of tfidf and cosine functions
+# Task 7
+# repeat on the stuff from task 6
 
 # Task 8
 # word2vec
