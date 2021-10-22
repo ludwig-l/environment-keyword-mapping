@@ -4,6 +4,9 @@ import datetime
 from pynytimes import NYTAPI
 from sklearn.feature_extraction.text import TfidfTransformer, TfidfVectorizer
 import pandas as pd
+import re
+import nltk
+from nltk.stem import WordNetLemmatizer
 
 """
 The plan:
