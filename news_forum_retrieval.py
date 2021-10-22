@@ -7,6 +7,7 @@ import pandas as pd
 import re
 import nltk
 from nltk.stem import WordNetLemmatizer
+from itertools import combinations
 
 """
 The plan:
@@ -52,6 +53,13 @@ def preprocess_and_lemmatize(document):
     processed_document = ' '.join(tokens)
     corpus_part = corpus_part + processed_document
     return corpus_part
+
+
+# taken from other main script
+def cosine_similarity(document_1, document_2):
+    vectorizer = TfidfVectorizer()
+    vectors = vectorizer.fit_transform([document_1, document_2])
+    return ((vectors * vectors.T).A)[0,1]
 
 
 # data structure for storing all
@@ -172,7 +180,7 @@ api_key = ''
 with open('nytimes_api_key.txt', 'r') as file:
     api_key = file.read()
 nyt = NYTAPI(key=api_key, parse_dates=True)
-n_articles = 10 # number of articles to retrieve with each API call
+n_articles = 250 # number of articles to retrieve with each API call
 
 
 # retrieve the articles
@@ -209,26 +217,12 @@ for keyword in data:
         data[keyword][year]['doc'] = preprocess_and_lemmatize(' '.join(data[keyword][year]['titles']))
 
 
-# print all the stuff
-print('===\nHere is the stuff you wanted:\n', data)
+# now let't implement this score computation for all the possible pairs
+print('===\nCosine similarity scores:')
+for pair in list(combinations(data, 2)):
+    for year in data['nature']: # just using the first entry here for simplicity (ad)
+        score = cosine_similarity(data[pair[0]][year]['doc'], data[pair[1]][year]['doc'])
+        print('-> Score for', pair, 'for year', year, score)
 
 
-# here do some kind of pre-processing
-
-
-# here will be the word cloud representation
-
-
-# test the TfIdf functionality on one data set
-vectorizer = TfidfVectorizer()
-vectors = vectorizer.fit_transform([
-    # use only the 'nature' keyword here
-    ' '.join(data['nature']['2000']['titles']),
-    ' '.join(data['nature']['2010']['titles']),
-    ' '.join(data['nature']['2020']['titles'])
-])
-feature_names = vectorizer.get_feature_names_out()
-dense = vectors.todense()
-denselist = dense.tolist()
-df = pd.DataFrame(denselist, columns=feature_names)
-print('===\nTfIdf-Dataframe:\n', df)
+# TODO: here will be the word cloud representation
