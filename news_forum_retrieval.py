@@ -4,6 +4,10 @@ import datetime
 from pynytimes import NYTAPI
 from sklearn.feature_extraction.text import TfidfTransformer, TfidfVectorizer
 import pandas as pd
+import re
+import nltk
+from nltk.stem import WordNetLemmatizer
+from itertools import combinations
 
 """
 The plan:
@@ -17,63 +21,156 @@ The plan:
 """
 
 
+# functions
+
+# this function is currently just copied from other main script
+
+def preprocess_and_lemmatize(document):      
+    corpus_part = ""
+    # preprocess
+    # to lowercase
+    document = document.lower()
+    # remove symbols/special characters
+    document = re.sub(r'\W', ' ', str(document))
+    # remove single characters
+    document = re.sub(r'\s+[a-zA-Z]\s+', ' ', document)
+    # remove single characters from the first characters
+    document = re.sub(r'\^[a-zA-Z]\s+', ' ', document)
+    # standardize number of spaces >1 space becomes 1 space
+    document = re.sub(r'\s+', ' ', document, flags=re.I)
+    # remove any prefixed "b"
+    document = re.sub(r'^b\s+', '', document)
+    # remove numbers that are not 20th or 21st century years
+    document = re.sub(r'\b(?!(\D\S*|[12][0-9]{3})\b)\S+\b', '', document)
+    # lemmatize
+    stemmer = WordNetLemmatizer()
+    english_stop = set(nltk.corpus.stopwords.words('english'))
+    tokens = document.split()
+    tokens = [stemmer.lemmatize(word) for word in tokens]
+    tokens = [word for word in tokens if word not in english_stop]
+    # keep words that are greater than 2 characters
+    tokens = [word for word in tokens if len(word) > 2]
+    processed_document = ' '.join(tokens)
+    corpus_part = corpus_part + processed_document
+    return corpus_part
+
+
+# taken from other main script
+def cosine_similarity(document_1, document_2):
+    vectorizer = TfidfVectorizer()
+    vectors = vectorizer.fit_transform([document_1, document_2])
+    return ((vectors * vectors.T).A)[0,1]
+
+
 # data structure for storing all
 data  = {
     'nature' : {
         '2000' : {
             'titles' : [],
-            'urls' : []
+            'urls' : [],
+            'doc' : ''
+        },
+        '2005' : {
+            'titles' : [],
+            'urls' : [],
+            'doc' : ''
         },
         '2010' : {
             'titles' : [],
-            'urls' : []
+            'urls' : [],
+            'doc' : ''
+        },
+        '2015' : {
+            'titles' : [],
+            'urls' : [],
+            'doc' : ''
         },
         '2020' : {
             'titles' : [],
-            'urls' : []
+            'urls' : [],
+            'doc' : ''
         },
     },
     'pollution' : {
         '2000' : {
             'titles' : [],
-            'urls' : []
+            'urls' : [],
+            'doc' : ''
+        },
+        '2005' : {
+            'titles' : [],
+            'urls' : [],
+            'doc' : ''
         },
         '2010' : {
             'titles' : [],
-            'urls' : []
+            'urls' : [],
+            'doc' : ''
+        },
+        '2015' : {
+            'titles' : [],
+            'urls' : [],
+            'doc' : ''
         },
         '2020' : {
             'titles' : [],
-            'urls' : []
-        }
+            'urls' : [],
+            'doc' : ''
+        },
     },
     'sustainability' : {
         '2000' : {
             'titles' : [],
             'urls' : [],
+            'doc' : ''
+        },
+        '2005' : {
+            'titles' : [],
+            'urls' : [],
+            'doc' : ''
         },
         '2010' : {
             'titles' : [],
-            'urls' : []
+            'urls' : [],
+            'doc' : ''
+        },
+        '2015' : {
+            'titles' : [],
+            'urls' : [],
+            'doc' : ''
         },
         '2020' : {
             'titles' : [],
-            'urls' : []
-        }
+            'urls' : [],
+            'doc' : ''
+        },
     },
     'environmentally friendly' : {
         '2000' : {
             'titles' : [],
-            'urls' : []
+            'urls' : [],
+            'doc' : ''
+        },
+        '2005' : {
+            'titles' : [],
+            'urls' : [],
+            'doc' : ''
         },
         '2010' : {
             'titles' : [],
-            'urls' : []
+            'urls' : [],
+            'doc' : ''
+        },
+        '2015' : {
+            'titles' : [],
+            'urls' : [],
+            'doc' : ''
         },
         '2020' : {
             'titles' : [],
-            'urls' : []
-        }
+            'urls' : [],
+            'doc' : ''
+        },
     }
 }
 
@@ -83,7 +180,7 @@ api_key = ''
 with open('nytimes_api_key.txt', 'r') as file:
     api_key = file.read()
 nyt = NYTAPI(key=api_key, parse_dates=True)
-n_articles = 10 # number of articles to retrieve with each API call
+n_articles = 250 # number of articles to retrieve with each API call
 
 
 # retrieve the articles
@@ -116,27 +213,16 @@ for keyword in data:
             data[keyword][year]['titles'].append(article_data['headline']['main'])
             data[keyword][year]['urls'].append(article_data['web_url'])
 
-
-# print all the stuff
-print('===\nHere is the stuff you wanted:\n', data)
-
-
-# here do some kind of pre-processing
+        # join each title together to one document and pre-process the text
+        data[keyword][year]['doc'] = preprocess_and_lemmatize(' '.join(data[keyword][year]['titles']))
 
 
-# here will be the word cloud representation
+# now let't implement this score computation for all the possible pairs
+print('===\nCosine similarity scores:')
+for pair in list(combinations(data, 2)):
+    for year in data['nature']: # just using the first entry here for simplicity (ad)
+        score = cosine_similarity(data[pair[0]][year]['doc'], data[pair[1]][year]['doc'])
+        print('-> Score for', pair, 'for year', year, score)
 
 
-# test the TfIdf functionality on one data set
-vectorizer = TfidfVectorizer()
-vectors = vectorizer.fit_transform([
-    # use only the 'nature' keyword here
-    ' '.join(data['nature']['2000']['titles']),
-    ' '.join(data['nature']['2010']['titles']),
-    ' '.join(data['nature']['2020']['titles'])
-])
-feature_names = vectorizer.get_feature_names_out()
-dense = vectors.todense()
-denselist = dense.tolist()
-df = pd.DataFrame(denselist, columns=feature_names)
-print('===\nTfIdf-Dataframe:\n', df)
+# TODO: here will be the word cloud representation
