@@ -20,94 +20,148 @@ The plan:
 """
 
 
+# functions
+
+# this function is currently just copied from other main script
+
+def preprocess_and_lemmatize(document):      
+    corpus_part = ""
+    # preprocess
+    # to lowercase
+    document = document.lower()
+    # remove symbols/special characters
+    document = re.sub(r'\W', ' ', str(document))
+    # remove single characters
+    document = re.sub(r'\s+[a-zA-Z]\s+', ' ', document)
+    # remove single characters from the first characters
+    document = re.sub(r'\^[a-zA-Z]\s+', ' ', document)
+    # standardize number of spaces >1 space becomes 1 space
+    document = re.sub(r'\s+', ' ', document, flags=re.I)
+    # remove any prefixed "b"
+    document = re.sub(r'^b\s+', '', document)
+    # remove numbers that are not 20th or 21st century years
+    document = re.sub(r'\b(?!(\D\S*|[12][0-9]{3})\b)\S+\b', '', document)
+    # lemmatize
+    stemmer = WordNetLemmatizer()
+    english_stop = set(nltk.corpus.stopwords.words('english'))
+    tokens = document.split()
+    tokens = [stemmer.lemmatize(word) for word in tokens]
+    tokens = [word for word in tokens if word not in english_stop]
+    # keep words that are greater than 2 characters
+    tokens = [word for word in tokens if len(word) > 2]
+    processed_document = ' '.join(tokens)
+    corpus_part = corpus_part + processed_document
+    return corpus_part
+
+
 # data structure for storing all
 data  = {
     'nature' : {
         '2000' : {
             'titles' : [],
-            'urls' : []
+            'urls' : [],
+            'doc' : ''
         },
         '2005' : {
             'titles' : [],
-            'urls' : []
+            'urls' : [],
+            'doc' : ''
         },
         '2010' : {
             'titles' : [],
-            'urls' : []
+            'urls' : [],
+            'doc' : ''
         },
         '2015' : {
             'titles' : [],
-            'urls' : []
+            'urls' : [],
+            'doc' : ''
         },
         '2020' : {
             'titles' : [],
-            'urls' : []
+            'urls' : [],
+            'doc' : ''
         },
     },
     'pollution' : {
         '2000' : {
             'titles' : [],
-            'urls' : []
+            'urls' : [],
+            'doc' : ''
         },
         '2005' : {
             'titles' : [],
-            'urls' : []
+            'urls' : [],
+            'doc' : ''
         },
         '2010' : {
             'titles' : [],
-            'urls' : []
+            'urls' : [],
+            'doc' : ''
         },
         '2015' : {
             'titles' : [],
-            'urls' : []
+            'urls' : [],
+            'doc' : ''
         },
         '2020' : {
             'titles' : [],
-            'urls' : []
+            'urls' : [],
+            'doc' : ''
         },
     },
     'sustainability' : {
         '2000' : {
             'titles' : [],
-            'urls' : []
+            'urls' : [],
+            'doc' : ''
         },
         '2005' : {
             'titles' : [],
-            'urls' : []
+            'urls' : [],
+            'doc' : ''
         },
         '2010' : {
             'titles' : [],
-            'urls' : []
+            'urls' : [],
+            'doc' : ''
         },
         '2015' : {
             'titles' : [],
-            'urls' : []
+            'urls' : [],
+            'doc' : ''
         },
         '2020' : {
             'titles' : [],
-            'urls' : []
+            'urls' : [],
+            'doc' : ''
         },
     },
     'environmentally friendly' : {
         '2000' : {
             'titles' : [],
-            'urls' : []
+            'urls' : [],
+            'doc' : ''
         },
         '2005' : {
             'titles' : [],
-            'urls' : []
+            'urls' : [],
+            'doc' : ''
         },
         '2010' : {
             'titles' : [],
-            'urls' : []
+            'urls' : [],
+            'doc' : ''
         },
         '2015' : {
             'titles' : [],
-            'urls' : []
+            'urls' : [],
+            'doc' : ''
         },
         '2020' : {
             'titles' : [],
-            'urls' : []
+            'urls' : [],
+            'doc' : ''
         },
     }
 }
