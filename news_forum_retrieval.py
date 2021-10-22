@@ -205,6 +205,9 @@ for keyword in data:
             data[keyword][year]['titles'].append(article_data['headline']['main'])
             data[keyword][year]['urls'].append(article_data['web_url'])
 
+        # join each title together to one document and pre-process the text
+        data[keyword][year]['doc'] = preprocess_and_lemmatize(' '.join(data[keyword][year]['titles']))
+
 
 # print all the stuff
 print('===\nHere is the stuff you wanted:\n', data)
