@@ -1,4 +1,5 @@
 import array
+from collections import Counter
 from typing import OrderedDict
 from numpy import single
 import wikipediaapi
@@ -7,13 +8,15 @@ import requests
 import re
 import nltk
 import ssl
-from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer, TfidfVectorizer
 from nltk.stem import WordNetLemmatizer
 from nltk.corpus import wordnet
 import pandas as pd
 from itertools import combinations
 from scipy import spatial
 from scipy.stats import pearsonr
+from sklearn.metrics.pairwise import cosine_similarity
+import math
 
 # global variables to store results
 global everything_corpus
@@ -204,25 +207,30 @@ def corpus_creation(unprocessed_documents, type):
 
 def vectorizer(document_1, document_2):
     vectorizer = TfidfVectorizer()
-    vectors = vectorizer.fit_transform(document_1, document_2)
+    vectors = vectorizer.fit_transform([document_1, document_2])
     document_words = vectorizer.get_feature_names_out()
     dense = vectors.todense()
     dense_list = dense.tolist()
     calculated_table = pd.DataFrame(dense_list, columns=document_words)
-    return calculated_table
+    return calculated_table.T
 
 ### Calculate cosine similarity (Task 2C, 3C, 4C) ###
 
-def cosine_similarity(document_1, document_2):
+def calculate_cosine_similarity(document_1, document_2):
     vectorizer = TfidfVectorizer()
-    vectors = vectorizer.fit_transform([document_1, document_2])
-    return ((vectors * vectors.T).A)[0,1]
+    #vectors = vectorizer.fit_transform(documents)
+    matrix = vectorizer.fit_transform([document_1, document_2]).toarray()
+    tfidfTran = TfidfTransformer()
+    tfidfTran.fit(matrix)
+    # added [0,1] so that the matrix is not printed
+    # print(((vectors * vectors.T).A)[0,1]) # test that values are correct
+    return cosine_similarity(matrix, matrix)[0,1]
 
 ### WuPalmer Wordnet calculations (Task 5A) ###
 
 def calculate_wupalmer(word_1, word_2):
     syn_1 = wordnet.synsets(word_1)[0]
-    syn_2 = wordnet.synsets('environmentally')[0]
+    syn_2 = wordnet.synsets(word_2)[0]
     wupalmer_similarity = syn_1.wup_similarity(syn_2)
     return wupalmer_similarity
 
@@ -250,32 +258,40 @@ corpus_creation(page_entities_list, "keywords")
 #print(entity_list_corpus['nature'])
 #print(everything_corpus)   # combination of all documents into one corpus
 all_cosine_results = array.array('d', [])
+
 for pair in list(combinations(list(single_document_corpus), 2)):
-    tfidf_results = vectorizer([single_document_corpus[pair[0]]], [single_document_corpus[pair[1]]])
+    tfidf_results = vectorizer(single_document_corpus[pair[0]], single_document_corpus[pair[1]])
     #print(tfidf_results)
-    all_cosine_results.append(cosine_similarity(single_document_corpus[pair[0]], single_document_corpus[pair[1]]))
+    all_cosine_results.append(calculate_cosine_similarity(single_document_corpus[pair[0]], single_document_corpus[pair[1]]))
+    cosine_result = calculate_cosine_similarity(single_document_corpus[pair[0]], single_document_corpus[pair[1]])
+    #print(pair[0] + " " + pair[1])
+    #print(cosine_result)
 #print(all_cosine_results)
 
 # Task 3: Repeat but with the titles of subsections
 for pair in list(combinations(list(subsections_corpus), 2)):
-    tfidf_results = vectorizer([subsections_corpus[pair[0]]], [subsections_corpus[pair[1]]])
+    tfidf_results = vectorizer(subsections_corpus[pair[0]], subsections_corpus[pair[1]])
     #print(tfidf_results)
-    cosine_results = cosine_similarity(subsections_corpus[pair[0]], subsections_corpus[pair[1]])
+    cosine_results = calculate_cosine_similarity(subsections_corpus[pair[0]], subsections_corpus[pair[1]])
+    #print(pair[0] + " " + pair[1])
     #print(cosine_results)
 
 # Task 4: Repeat but with the entity-categories
 for pair in list(combinations(list(entity_list_corpus), 2)):
-    tfidf_results = vectorizer([entity_list_corpus[pair[0]]], [entity_list_corpus[pair[1]]])
+    tfidf_results = vectorizer(entity_list_corpus[pair[0]], entity_list_corpus[pair[1]])
     #print(tfidf_results)
-    cosine_results = cosine_similarity(entity_list_corpus[pair[0]], entity_list_corpus[pair[1]])
+    cosine_results = calculate_cosine_similarity(entity_list_corpus[pair[0]], entity_list_corpus[pair[1]])
+    #print(pair[0] + " " + pair[1])
     #print(cosine_results)
 
 # Task 5: Calculate wu and Palmer WordNet semantic similarity, write a vector representing that similarity,
 # and calculate the correlation between the semantic similarity and the wikipedia based similarity
-pair_words = ['nature', 'pollution', 'sustainability', 'environmentally']
+pair_words = ['nature', 'pollution', 'sustainability', 'environment']
 all_wupalmer_results = array.array('d', [])
 for pair in combinations(pair_words, 2):
     all_wupalmer_results.append(calculate_wupalmer(pair[0], pair[1]))
+    #print(pair[0] + " " + pair[1])
+    #print(calculate_wupalmer(pair[0], pair[1]))
 wu_wiki_correlation = pearsonr(all_wupalmer_results, all_cosine_results)
 # first value is the pearson's correlation coefficient, second value is the two-tailed p-value
 #print(wu_wiki_correlation)
@@ -297,9 +313,9 @@ for key in entity_list_corpus:
 corpus_creation(all_one_pass_entity_categories, "keywords_2")
 #print(one_pass_entity_list_corpus)
 for pair in list(combinations(list(one_pass_entity_list_corpus), 2)):
-    tfidf_results = vectorizer([one_pass_entity_list_corpus[pair[0]]], [one_pass_entity_list_corpus[pair[1]]])
+    tfidf_results = vectorizer(one_pass_entity_list_corpus[pair[0]], one_pass_entity_list_corpus[pair[1]])
     #print(tfidf_results)
-    cosine_results = cosine_similarity(one_pass_entity_list_corpus[pair[0]], one_pass_entity_list_corpus[pair[1]])
+    cosine_results = calculate_cosine_similarity(one_pass_entity_list_corpus[pair[0]], one_pass_entity_list_corpus[pair[1]])
     #print(cosine_results)
 
 # Task 8
