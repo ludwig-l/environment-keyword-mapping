@@ -2,6 +2,7 @@ import array
 from collections import Counter
 from typing import OrderedDict
 from numpy import single
+import numpy as np
 import wikipediaapi
 from bs4 import BeautifulSoup
 import requests
@@ -16,7 +17,10 @@ from itertools import combinations
 from scipy import spatial
 from scipy.stats import pearsonr
 from sklearn.metrics.pairwise import cosine_similarity
+import matplotlib.pyplot as plt
 import math
+import os
+import psutil
 
 # global variables to store results
 global everything_corpus
@@ -198,9 +202,8 @@ def corpus_creation(unprocessed_documents, type):
             entity_list_corpus[key] = corpus
         all_document_corpus = corpus
     else:
-        for key in page_entities_list:
-            for title in page_entities_list[key]:
-                corpus = corpus + " " + preprocess_and_lemmatize(title)
+        for key in all_one_pass_entity_categories:
+            corpus = corpus + " " + preprocess_and_lemmatize(all_one_pass_entity_categories[key])
             one_pass_entity_list_corpus[key] = corpus
 
 ### TfidfVectorizer creation (Task 2B, 3B, 4B) ###
@@ -209,6 +212,19 @@ def vectorizer(document_1, document_2):
     vectorizer = TfidfVectorizer()
     vectors = vectorizer.fit_transform([document_1, document_2])
     document_words = vectorizer.get_feature_names_out()
+
+    # print the top 10 most used words from the tfidf results
+    importance = np.argsort(np.asarray(vectors.sum(axis=0)).ravel())[::-1]
+    tfidf_feature_names = np.array(vectorizer.get_feature_names_out())
+    #print("MOST")
+    #print(tfidf_feature_names[importance[:10]])
+
+    # print the top 10 least used words from the tfidf results
+    unimportance = np.argsort(np.asarray(vectors.sum(axis=0)).ravel())[::1]
+    tfidf_feature_names = np.array(vectorizer.get_feature_names_out())
+    #print("LEAST")
+    #print(tfidf_feature_names[unimportance[:10]])
+
     dense = vectors.todense()
     dense_list = dense.tolist()
     calculated_table = pd.DataFrame(dense_list, columns=document_words)
@@ -218,7 +234,6 @@ def vectorizer(document_1, document_2):
 
 def calculate_cosine_similarity(document_1, document_2):
     vectorizer = TfidfVectorizer()
-    #vectors = vectorizer.fit_transform(documents)
     matrix = vectorizer.fit_transform([document_1, document_2]).toarray()
     tfidfTran = TfidfTransformer()
     tfidfTran.fit(matrix)
@@ -237,17 +252,22 @@ def calculate_wupalmer(word_1, word_2):
 ### Scrape entity-categories from already found entity-categories (Task 6) ###
 
 def entity_category_scraper(entity_category):
-    page_request = requests.get("https://en.wikipedia.org/wiki/" + entity_category)
+    page_request = requests.get("https://en.wikipedia.org" + entity_category)
     beautiful_soup = BeautifulSoup(page_request.text, "html.parser")
-    page_entity_categories = []
+    page_entity_categories = ""
     for link in beautiful_soup.find_all("a"):
-        page_entity_categories.append(link.get("title", ""))
+        page_entity_categories = page_entity_categories + " " + link.get("title", "")
     return page_entity_categories
 
 ### main ###
 
 # Task 1: Get unprocessed pages, subsections, and list of entities (clickable keywords except reference list)
 setup()
+
+pid = os.getpid()
+python_process = psutil.Process(pid)
+memoryUse = python_process.memory_info().rss # memory used in bytes
+#print('memory use:', memoryUse)
 
 # Task 2: Create combined corpus, as well as separate corpuses to do TFIDF and cosine similarity
 corpus_creation(unprocessed_page, "pages")
@@ -260,6 +280,7 @@ corpus_creation(page_entities_list, "keywords")
 all_cosine_results = array.array('d', [])
 
 for pair in list(combinations(list(single_document_corpus), 2)):
+    #print(pair[0] + " " + pair[1])
     tfidf_results = vectorizer(single_document_corpus[pair[0]], single_document_corpus[pair[1]])
     #print(tfidf_results)
     all_cosine_results.append(calculate_cosine_similarity(single_document_corpus[pair[0]], single_document_corpus[pair[1]]))
@@ -270,6 +291,7 @@ for pair in list(combinations(list(single_document_corpus), 2)):
 
 # Task 3: Repeat but with the titles of subsections
 for pair in list(combinations(list(subsections_corpus), 2)):
+    #print(pair[0] + " " + pair[1])
     tfidf_results = vectorizer(subsections_corpus[pair[0]], subsections_corpus[pair[1]])
     #print(tfidf_results)
     cosine_results = calculate_cosine_similarity(subsections_corpus[pair[0]], subsections_corpus[pair[1]])
@@ -278,6 +300,7 @@ for pair in list(combinations(list(subsections_corpus), 2)):
 
 # Task 4: Repeat but with the entity-categories
 for pair in list(combinations(list(entity_list_corpus), 2)):
+    #print(pair[0] + " " + pair[1])
     tfidf_results = vectorizer(entity_list_corpus[pair[0]], entity_list_corpus[pair[1]])
     #print(tfidf_results)
     cosine_results = calculate_cosine_similarity(entity_list_corpus[pair[0]], entity_list_corpus[pair[1]])
@@ -292,20 +315,34 @@ for pair in combinations(pair_words, 2):
     all_wupalmer_results.append(calculate_wupalmer(pair[0], pair[1]))
     #print(pair[0] + " " + pair[1])
     #print(calculate_wupalmer(pair[0], pair[1]))
+#print(all_cosine_results)
+#print(all_wupalmer_results)
+
+#plt.scatter(all_cosine_results, all_wupalmer_results)
+#plt.xlim([0.3, 1.1])
+#plt.ylim([0.3, 1.1])
+#plt.xlabel('cosine results')
+#plt.ylabel('wu and palmer results')
+#plt.title('similarity comparison')
+#plt.show()
+
 wu_wiki_correlation = pearsonr(all_wupalmer_results, all_cosine_results)
 # first value is the pearson's correlation coefficient, second value is the two-tailed p-value
+# negative, weak relationship (as first increases, second decreases)
 #print(wu_wiki_correlation)
 
 # Task 6: Scrape content of each entity and retrieve all clickable keywords identified
+global all_one_pass_entity_categories
 all_one_pass_entity_categories = {}
-for key in entity_list_corpus:
-    entity_list = entity_list_corpus[key]
-    entity_categories = entity_list.split()
-    one_pass_entities = []
-    for entity_category in entity_categories:
-        entity_category_scrape = entity_category_scraper(entity_category)
-        one_pass_entities.append(entity_category_scrape)
-        break # I have the break because otherwise it takes more than an hour and a half to complete 
+for key in page_entities_list:
+    one_pass_entities = ""       
+    for entity_category in page_entities_list[key]:
+        if "https://" in page_entities_list[key][entity_category]:
+            break
+        else:
+            entity_category_scrape = entity_category_scraper(page_entities_list[key][entity_category])
+        one_pass_entities = one_pass_entities + " " + entity_category_scrape
+        break
     all_one_pass_entity_categories[key] = one_pass_entities
 #print(all_one_pass_entity_categories)
 
@@ -313,10 +350,13 @@ for key in entity_list_corpus:
 corpus_creation(all_one_pass_entity_categories, "keywords_2")
 #print(one_pass_entity_list_corpus)
 for pair in list(combinations(list(one_pass_entity_list_corpus), 2)):
+    #print(pair[0] + " " + pair[1])
     tfidf_results = vectorizer(one_pass_entity_list_corpus[pair[0]], one_pass_entity_list_corpus[pair[1]])
     #print(tfidf_results)
     cosine_results = calculate_cosine_similarity(one_pass_entity_list_corpus[pair[0]], one_pass_entity_list_corpus[pair[1]])
     #print(cosine_results)
+
+#print('memory use:', memoryUse)
 
 # Task 8
 # word2vec
