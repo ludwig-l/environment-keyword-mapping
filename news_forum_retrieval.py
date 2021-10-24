@@ -65,108 +65,108 @@ def cosine_similarity(document_1, document_2):
 # data structure for storing all
 data  = {
     'nature' : {
-        '2000' : {
+        '2001-2004' : {
             'titles' : [],
             'urls' : [],
             'doc' : ''
         },
-        '2005' : {
+        '2005-2008' : {
             'titles' : [],
             'urls' : [],
             'doc' : ''
         },
-        '2010' : {
+        '2009-2012' : {
             'titles' : [],
             'urls' : [],
             'doc' : ''
         },
-        '2015' : {
+        '2013-2016' : {
             'titles' : [],
             'urls' : [],
             'doc' : ''
         },
-        '2020' : {
+        '2017-2020' : {
             'titles' : [],
             'urls' : [],
             'doc' : ''
         },
     },
     'pollution' : {
-        '2000' : {
+        '2001-2004' : {
             'titles' : [],
             'urls' : [],
             'doc' : ''
         },
-        '2005' : {
+        '2005-2008' : {
             'titles' : [],
             'urls' : [],
             'doc' : ''
         },
-        '2010' : {
+        '2009-2012' : {
             'titles' : [],
             'urls' : [],
             'doc' : ''
         },
-        '2015' : {
+        '2013-2016' : {
             'titles' : [],
             'urls' : [],
             'doc' : ''
         },
-        '2020' : {
+        '2017-2020' : {
             'titles' : [],
             'urls' : [],
             'doc' : ''
         },
     },
     'sustainability' : {
-        '2000' : {
+        '2001-2004' : {
             'titles' : [],
             'urls' : [],
             'doc' : ''
         },
-        '2005' : {
+        '2005-2008' : {
             'titles' : [],
             'urls' : [],
             'doc' : ''
         },
-        '2010' : {
+        '2009-2012' : {
             'titles' : [],
             'urls' : [],
             'doc' : ''
         },
-        '2015' : {
+        '2013-2016' : {
             'titles' : [],
             'urls' : [],
             'doc' : ''
         },
-        '2020' : {
+        '2017-2020' : {
             'titles' : [],
             'urls' : [],
             'doc' : ''
         },
     },
     'environmentally friendly' : {
-        '2000' : {
+        '2001-2004' : {
             'titles' : [],
             'urls' : [],
             'doc' : ''
         },
-        '2005' : {
+        '2005-2008' : {
             'titles' : [],
             'urls' : [],
             'doc' : ''
         },
-        '2010' : {
+        '2009-2012' : {
             'titles' : [],
             'urls' : [],
             'doc' : ''
         },
-        '2015' : {
+        '2013-2016' : {
             'titles' : [],
             'urls' : [],
             'doc' : ''
         },
-        '2020' : {
+        '2017-2020' : {
             'titles' : [],
             'urls' : [],
             'doc' : ''
@@ -191,8 +191,8 @@ for keyword in data:
         print('---', year) # progress information
 
         # define the two needed datetime objects
-        date_begin = datetime.datetime.fromisoformat(year + '-01-01')
-        date_end = datetime.datetime.fromisoformat(year + '-12-31')
+        date_begin = datetime.datetime.fromisoformat(year[:4] + '-01-01')
+        date_end = datetime.datetime.fromisoformat(year[5:] + '-12-31')
 
         # API call for the desired information
         retrieved_articles = nyt.article_search(
@@ -222,7 +222,7 @@ print('===\nCosine similarity scores:')
 for pair in list(combinations(data, 2)):
     for year in data['nature']: # just using the first entry here for simplicity (ad)
         score = cosine_similarity(data[pair[0]][year]['doc'], data[pair[1]][year]['doc'])
-        print('-> Score for', pair, 'for year', year, score)
+        print('-> Score for', pair, 'for years', year, score)
 
 
 # TODO: here will be the word cloud representation
