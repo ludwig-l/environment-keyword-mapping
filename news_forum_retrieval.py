@@ -68,26 +68,36 @@ data  = {
         '2001-2004' : {
             'titles' : [],
             'urls' : [],
+            'snippets' : [],
+            'lead_paragraphs' : [],
             'doc' : ''
         },
         '2005-2008' : {
             'titles' : [],
             'urls' : [],
+            'snippets' : [],
+            'lead_paragraphs' : [],
             'doc' : ''
         },
         '2009-2012' : {
             'titles' : [],
             'urls' : [],
+            'snippets' : [],
+            'lead_paragraphs' : [],
             'doc' : ''
         },
         '2013-2016' : {
             'titles' : [],
             'urls' : [],
+            'snippets' : [],
+            'lead_paragraphs' : [],
             'doc' : ''
         },
         '2017-2020' : {
             'titles' : [],
             'urls' : [],
+            'snippets' : [],
+            'lead_paragraphs' : [],
             'doc' : ''
         },
     },
@@ -95,26 +105,36 @@ data  = {
         '2001-2004' : {
             'titles' : [],
             'urls' : [],
+            'snippets' : [],
+            'lead_paragraphs' : [],
             'doc' : ''
         },
         '2005-2008' : {
             'titles' : [],
             'urls' : [],
+            'snippets' : [],
+            'lead_paragraphs' : [],
             'doc' : ''
         },
         '2009-2012' : {
             'titles' : [],
             'urls' : [],
+            'snippets' : [],
+            'lead_paragraphs' : [],
             'doc' : ''
         },
         '2013-2016' : {
             'titles' : [],
             'urls' : [],
+            'snippets' : [],
+            'lead_paragraphs' : [],
             'doc' : ''
         },
         '2017-2020' : {
             'titles' : [],
             'urls' : [],
+            'snippets' : [],
+            'lead_paragraphs' : [],
             'doc' : ''
         },
     },
@@ -122,26 +142,36 @@ data  = {
         '2001-2004' : {
             'titles' : [],
             'urls' : [],
+            'snippets' : [],
+            'lead_paragraphs' : [],
             'doc' : ''
         },
         '2005-2008' : {
             'titles' : [],
             'urls' : [],
+            'snippets' : [],
+            'lead_paragraphs' : [],
             'doc' : ''
         },
         '2009-2012' : {
             'titles' : [],
             'urls' : [],
+            'snippets' : [],
+            'lead_paragraphs' : [],
             'doc' : ''
         },
         '2013-2016' : {
             'titles' : [],
             'urls' : [],
+            'snippets' : [],
+            'lead_paragraphs' : [],
             'doc' : ''
         },
         '2017-2020' : {
             'titles' : [],
             'urls' : [],
+            'snippets' : [],
+            'lead_paragraphs' : [],
             'doc' : ''
         },
     },
@@ -149,26 +179,36 @@ data  = {
         '2001-2004' : {
             'titles' : [],
             'urls' : [],
+            'snippets' : [],
+            'lead_paragraphs' : [],
             'doc' : ''
         },
         '2005-2008' : {
             'titles' : [],
             'urls' : [],
+            'snippets' : [],
+            'lead_paragraphs' : [],
             'doc' : ''
         },
         '2009-2012' : {
             'titles' : [],
             'urls' : [],
+            'snippets' : [],
+            'lead_paragraphs' : [],
             'doc' : ''
         },
         '2013-2016' : {
             'titles' : [],
             'urls' : [],
+            'snippets' : [],
+            'lead_paragraphs' : [],
             'doc' : ''
         },
         '2017-2020' : {
             'titles' : [],
             'urls' : [],
+            'snippets' : [],
+            'lead_paragraphs' : [],
             'doc' : ''
         },
     }
@@ -212,6 +252,8 @@ for keyword in data:
         for i, article_data in enumerate(retrieved_articles):
             data[keyword][year]['titles'].append(article_data['headline']['main'])
             data[keyword][year]['urls'].append(article_data['web_url'])
+            data[keyword][year]['snippets'].append(article_data['snippet'])
+            data[keyword][year]['lead_paragraphs'].append(article_data['lead_paragraph'])
 
         # join each title together to one document and pre-process the text
         data[keyword][year]['doc'] = preprocess_and_lemmatize(' '.join(data[keyword][year]['titles']))
