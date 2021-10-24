@@ -6,4 +6,4 @@ matplotlib
 wordcloud
 sklearn
 pynytimes
-gensimm
+gensim
