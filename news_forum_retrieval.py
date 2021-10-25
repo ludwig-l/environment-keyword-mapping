@@ -68,6 +68,7 @@ data  = {
         '2001-2004' : {
             'titles' : [],
             'urls' : [],
+            'abstracts' : [],
             'snippets' : [],
             'lead_paragraphs' : [],
             'doc' : ''
@@ -75,6 +76,7 @@ data  = {
         '2005-2008' : {
             'titles' : [],
             'urls' : [],
+            'abstracts' : [],
             'snippets' : [],
             'lead_paragraphs' : [],
             'doc' : ''
@@ -82,6 +84,7 @@ data  = {
         '2009-2012' : {
             'titles' : [],
             'urls' : [],
+            'abstracts' : [],
             'snippets' : [],
             'lead_paragraphs' : [],
             'doc' : ''
@@ -89,6 +92,7 @@ data  = {
         '2013-2016' : {
             'titles' : [],
             'urls' : [],
+            'abstracts' : [],
             'snippets' : [],
             'lead_paragraphs' : [],
             'doc' : ''
@@ -96,6 +100,7 @@ data  = {
         '2017-2020' : {
             'titles' : [],
             'urls' : [],
+            'abstracts' : [],
             'snippets' : [],
             'lead_paragraphs' : [],
             'doc' : ''
@@ -105,6 +110,7 @@ data  = {
         '2001-2004' : {
             'titles' : [],
             'urls' : [],
+            'abstracts' : [],
             'snippets' : [],
             'lead_paragraphs' : [],
             'doc' : ''
@@ -112,6 +118,7 @@ data  = {
         '2005-2008' : {
             'titles' : [],
             'urls' : [],
+            'abstracts' : [],
             'snippets' : [],
             'lead_paragraphs' : [],
             'doc' : ''
@@ -119,6 +126,7 @@ data  = {
         '2009-2012' : {
             'titles' : [],
             'urls' : [],
+            'abstracts' : [],
             'snippets' : [],
             'lead_paragraphs' : [],
             'doc' : ''
@@ -126,6 +134,7 @@ data  = {
         '2013-2016' : {
             'titles' : [],
             'urls' : [],
+            'abstracts' : [],
             'snippets' : [],
             'lead_paragraphs' : [],
             'doc' : ''
@@ -133,6 +142,7 @@ data  = {
         '2017-2020' : {
             'titles' : [],
             'urls' : [],
+            'abstracts' : [],
             'snippets' : [],
             'lead_paragraphs' : [],
             'doc' : ''
@@ -142,6 +152,7 @@ data  = {
         '2001-2004' : {
             'titles' : [],
             'urls' : [],
+            'abstracts' : [],
             'snippets' : [],
             'lead_paragraphs' : [],
             'doc' : ''
@@ -149,6 +160,7 @@ data  = {
         '2005-2008' : {
             'titles' : [],
             'urls' : [],
+            'abstracts' : [],
             'snippets' : [],
             'lead_paragraphs' : [],
             'doc' : ''
@@ -156,6 +168,7 @@ data  = {
         '2009-2012' : {
             'titles' : [],
             'urls' : [],
+            'abstracts' : [],
             'snippets' : [],
             'lead_paragraphs' : [],
             'doc' : ''
@@ -163,6 +176,7 @@ data  = {
         '2013-2016' : {
             'titles' : [],
             'urls' : [],
+            'abstracts' : [],
             'snippets' : [],
             'lead_paragraphs' : [],
             'doc' : ''
@@ -170,6 +184,7 @@ data  = {
         '2017-2020' : {
             'titles' : [],
             'urls' : [],
+            'abstracts' : [],
             'snippets' : [],
             'lead_paragraphs' : [],
             'doc' : ''
@@ -179,6 +194,7 @@ data  = {
         '2001-2004' : {
             'titles' : [],
             'urls' : [],
+            'abstracts' : [],
             'snippets' : [],
             'lead_paragraphs' : [],
             'doc' : ''
@@ -186,6 +202,7 @@ data  = {
         '2005-2008' : {
             'titles' : [],
             'urls' : [],
+            'abstracts' : [],
             'snippets' : [],
             'lead_paragraphs' : [],
             'doc' : ''
@@ -193,6 +210,7 @@ data  = {
         '2009-2012' : {
             'titles' : [],
             'urls' : [],
+            'abstracts' : [],
             'snippets' : [],
             'lead_paragraphs' : [],
             'doc' : ''
@@ -200,6 +218,7 @@ data  = {
         '2013-2016' : {
             'titles' : [],
             'urls' : [],
+            'abstracts' : [],
             'snippets' : [],
             'lead_paragraphs' : [],
             'doc' : ''
@@ -207,6 +226,7 @@ data  = {
         '2017-2020' : {
             'titles' : [],
             'urls' : [],
+            'abstracts' : [],
             'snippets' : [],
             'lead_paragraphs' : [],
             'doc' : ''
@@ -252,6 +272,7 @@ for keyword in data:
         for i, article_data in enumerate(retrieved_articles):
             data[keyword][year]['titles'].append(article_data['headline']['main'])
             data[keyword][year]['urls'].append(article_data['web_url'])
+            data[keyword][year]['abstracts'].append(article_data['abstract'])
             data[keyword][year]['snippets'].append(article_data['snippet'])
             data[keyword][year]['lead_paragraphs'].append(article_data['lead_paragraph'])
 
