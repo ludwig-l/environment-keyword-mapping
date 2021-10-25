@@ -8,6 +8,8 @@ import re
 import nltk
 from nltk.stem import WordNetLemmatizer
 from itertools import combinations
+from wordcloud import WordCloud
+import matplotlib.pyplot as plt
 
 """
 The plan:
@@ -288,4 +290,13 @@ for pair in list(combinations(data, 2)):
         print('-> Score for', pair, 'for years', year, score)
 
 
-# TODO: here will be the word cloud representation
+# create word clouds and plot them
+for keyword in data:
+    for year in data[keyword]:
+        # generate the wordcloud from the documents
+        wordcloud = WordCloud().generate(data[keyword][year]['doc'])
+        # plot
+        plt.imshow(wordcloud, interpolation='bilinear')
+        plt.title('Word cloud representation for keyword \"' + keyword + '\" for time period ' + year)
+        plt.axis('off')
+        plt.show()
