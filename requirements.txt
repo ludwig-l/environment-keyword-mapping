@@ -7,3 +7,4 @@ wordcloud
 sklearn
 pynytimes
 gensim
+pandas
