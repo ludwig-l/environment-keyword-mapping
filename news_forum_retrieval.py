@@ -297,6 +297,8 @@ for keyword in data:
         wordcloud = WordCloud().generate(data[keyword][year]['doc'])
         # plot
         plt.imshow(wordcloud, interpolation='bilinear')
-        plt.title('Word cloud representation for keyword \"' + keyword + '\" for time period ' + year)
         plt.axis('off')
+        plt.savefig('word_cloud_' + keyword + '_' + year + '.png', bbox_inches = 'tight', pad_inches = 0)
+        # save the figure before adding title and after turing off the axis, otherwise the saved picture will be ugly
+        plt.title('Word cloud representation for keyword \"' + keyword + '\" for time period ' + year)
         plt.show()
