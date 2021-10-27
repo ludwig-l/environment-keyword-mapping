@@ -6,7 +6,7 @@ from tkinter import scrolledtext
 
 # some definitions
 default_button_text = 'Compute'
-default_label_font = ('Arial Bold', 20)
+default_label_font = ('Arial Bold', 12)
 text_tasks = [
     '1. Show Wikipedia pages for each keyword.',
     '2. Pre-process each dosument and calculate the cosine similarity measure of each document pair via Tf-Idf vectorizer approach.',
@@ -19,6 +19,7 @@ text_tasks = [
     '9. Retrieve articles from a news forum and retrieve information for different time periods. Display the word cloud representation for each document.',
     '10. Repeat the Tf-Idf based similarity calculus amoung each pair at each time.',
 ]
+label_wraplength = 1000 # length for each line before the label text does a line break
 
 # set up screen
 window = tk.Tk()
@@ -41,8 +42,11 @@ def button_clicked():
 # set up labels
 
 # task 1
-label_t1 = tk.Label(window, text=text_tasks[0], font=default_label_font)
-label_t1.grid(row=0, column=0)
+label_t1 = tk.Label(window,
+                    text=text_tasks[0],
+                    font=default_label_font,
+                    wraplength=label_wraplength)
+label_t1.grid(row=0, column=0, sticky=tk.W)
 label_t1.grid_rowconfigure(1, weight=1)
 label_t1.grid_columnconfigure(1, weight=1)
 btn_t1 = tk.Button(window, text=default_button_text, command=button_clicked)
@@ -56,26 +60,30 @@ txt_t1.grid(row=1, column=0)
 # task 2
 label_t2 = tk.Label(window,
                     text=text_tasks[1],
-                    font=default_label_font)
-label_t2.grid(row=2, column=0)
+                    font=default_label_font,
+                    wraplength=label_wraplength)
+label_t2.grid(row=2, column=0, sticky=tk.W)
 label_t2.grid_rowconfigure(1, weight=1)
-label_t2.grid_columnconfigure(1, weight=1)
 btn_t2 = tk.Button(window, text=default_button_text)
 btn_t2.grid(row=2, column=1)
 
 # task 3
 label_t3 = tk.Label(window,
                     text=text_tasks[2],
-                    font=default_label_font)
-label_t3.grid(row=3, column=0)
+                    font=default_label_font,
+                    wraplength=label_wraplength)
+label_t3.grid(row=3, column=0, sticky=tk.W)
 label_t3.grid_rowconfigure(1, weight=1)
 label_t3.grid_columnconfigure(1, weight=1)
 btn_t3 = tk.Button(window, text=default_button_text)
 btn_t3.grid(row=3, column=1)
 
 # task 4
-label_t4 = tk.Label(window,text=text_tasks[3], font=default_label_font)
-label_t4.grid(row=4, column=0)
+label_t4 = tk.Label(window,
+                    text=text_tasks[3],
+                    font=default_label_font,
+                    wraplength=label_wraplength)
+label_t4.grid(row=4, column=0, sticky=tk.W)
 label_t4.grid_rowconfigure(1)
 label_t4.grid_columnconfigure(1, weight=1)
 btn_t4 = tk.Button(window, text=default_button_text)
