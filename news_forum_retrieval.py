@@ -279,7 +279,8 @@ for keyword in data:
             data[keyword][year]['lead_paragraphs'].append(article_data['lead_paragraph'])
 
         # join each title together to one document and pre-process the text
-        data[keyword][year]['doc'] = preprocess_and_lemmatize(' '.join(data[keyword][year]['titles']))
+        #data[keyword][year]['doc'] = preprocess_and_lemmatize(' '.join(data[keyword][year]['titles']))
+        data[keyword][year]['doc'] = preprocess_and_lemmatize(' '.join(data[keyword][year]['abstracts']))
 
 
 # now let't implement this score computation for all the possible pairs
