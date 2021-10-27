@@ -45,7 +45,8 @@ def button_clicked():
 label_t1 = tk.Label(window,
                     text=text_tasks[0],
                     font=default_label_font,
-                    wraplength=label_wraplength)
+                    wraplength=label_wraplength,
+                    justify=tk.LEFT)
 label_t1.grid(row=0, column=0, sticky=tk.W)
 label_t1.grid_rowconfigure(1, weight=1)
 label_t1.grid_columnconfigure(1, weight=1)
@@ -61,7 +62,8 @@ txt_t1.grid(row=1, column=0)
 label_t2 = tk.Label(window,
                     text=text_tasks[1],
                     font=default_label_font,
-                    wraplength=label_wraplength)
+                    wraplength=label_wraplength,
+                    justify=tk.LEFT)
 label_t2.grid(row=2, column=0, sticky=tk.W)
 label_t2.grid_rowconfigure(1, weight=1)
 btn_t2 = tk.Button(window, text=default_button_text)
@@ -71,7 +73,8 @@ btn_t2.grid(row=2, column=1)
 label_t3 = tk.Label(window,
                     text=text_tasks[2],
                     font=default_label_font,
-                    wraplength=label_wraplength)
+                    wraplength=label_wraplength,
+                    justify=tk.LEFT)
 label_t3.grid(row=3, column=0, sticky=tk.W)
 label_t3.grid_rowconfigure(1, weight=1)
 label_t3.grid_columnconfigure(1, weight=1)
@@ -82,7 +85,8 @@ btn_t3.grid(row=3, column=1)
 label_t4 = tk.Label(window,
                     text=text_tasks[3],
                     font=default_label_font,
-                    wraplength=label_wraplength)
+                    wraplength=label_wraplength,
+                    justify=tk.LEFT)
 label_t4.grid(row=4, column=0, sticky=tk.W)
 label_t4.grid_rowconfigure(1)
 label_t4.grid_columnconfigure(1, weight=1)
