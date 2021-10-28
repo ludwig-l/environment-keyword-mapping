@@ -25,74 +25,6 @@ label_wraplength = 1000 # length for each line before the label text does a line
 window = tk.Tk()
 window.title('Environment keyword mapping')
 window.geometry('600x800')
-# window.grid_rowconfigure(0, weight=1)
-# window.grid_columnconfigure(0, weight=1)
-
-'''
-# functions to execute actions
-
-def button_clicked():
-    # write text to the button; need to disable and enable afterwards
-    txt_t1.configure(state='normal')
-    txt_t1.delete('1.0', tk.END)
-    txt_t1.insert(tk.END, '42')
-    txt_t1.configure(state='disabled')
-
-
-# set up labels
-
-# task 1
-label_t1 = tk.Label(window,
-                    text=text_tasks[0],
-                    font=default_label_font,
-                    wraplength=label_wraplength,
-                    justify=tk.LEFT)
-label_t1.grid(row=0, column=0, sticky=tk.W)
-label_t1.grid_rowconfigure(1, weight=1)
-label_t1.grid_columnconfigure(1, weight=1)
-btn_t1 = tk.Button(window, text=default_button_text, command=button_clicked)
-btn_t1.grid(row=0, column=1)
-#btn_t1.grid_rownconfigure(1, weight=1)
-#btn_t1.grid_columnconfigure(1, weight=1)
-txt_t1 = scrolledtext.ScrolledText(master=window, wrap=tk.WORD)
-txt_t1.configure()
-txt_t1.grid(row=1, column=0)
-
-# task 2
-label_t2 = tk.Label(window,
-                    text=text_tasks[1],
-                    font=default_label_font,
-                    wraplength=label_wraplength,
-                    justify=tk.LEFT)
-label_t2.grid(row=2, column=0, sticky=tk.W)
-label_t2.grid_rowconfigure(1, weight=1)
-btn_t2 = tk.Button(window, text=default_button_text)
-btn_t2.grid(row=2, column=1)
-
-# task 3
-label_t3 = tk.Label(window,
-                    text=text_tasks[2],
-                    font=default_label_font,
-                    wraplength=label_wraplength,
-                    justify=tk.LEFT)
-label_t3.grid(row=3, column=0, sticky=tk.W)
-label_t3.grid_rowconfigure(1, weight=1)
-label_t3.grid_columnconfigure(1, weight=1)
-btn_t3 = tk.Button(window, text=default_button_text)
-btn_t3.grid(row=3, column=1)
-
-# task 4
-label_t4 = tk.Label(window,
-                    text=text_tasks[3],
-                    font=default_label_font,
-                    wraplength=label_wraplength,
-                    justify=tk.LEFT)
-label_t4.grid(row=4, column=0, sticky=tk.W)
-label_t4.grid_rowconfigure(1)
-label_t4.grid_columnconfigure(1, weight=1)
-btn_t4 = tk.Button(window, text=default_button_text)
-btn_t4.grid(row=4, column=1)
-'''
 
 
 # now set up the connections between the buttons and the text boxes
@@ -127,15 +59,6 @@ for i, text in enumerate(text_tasks):
                     button_clicked(scrolled_text_obj, idx))
     btn.grid(row=2*i, column=1, sticky=tk.W)
     btns.append(btn)
-
-
-# test one case
-#btns[0].configure(command=button_clicked(text_boxes[0]))
-
-# for i, text in enumerate(text_tasks):
-#
-#     # link to functions
-#     def button_clicked(scrolled_text_widget):
 
 
 window.mainloop()
