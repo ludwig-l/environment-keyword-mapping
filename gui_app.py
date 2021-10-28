@@ -96,14 +96,15 @@ btn_t4.grid(row=4, column=1)
 
 
 # now set up the connections between the buttons and the text boxes
-def button_clicked(scrolled_text_widget):
+def button_clicked(scrolled_text_widget, idx):
     # write text to the button; need to disable and enable afterwards
     scrolled_text_widget.configure(state='normal')
     scrolled_text_widget.delete('1.0', tk.END)
     scrolled_text_widget.insert(tk.END, '42')
-    #scrolled_text_widget.configure(state='disabled')
+    scrolled_text_widget.configure(state='disabled')
+    print('This is button no.', idx)
 
-# now try to build the widgets using a for-loop
+# build the widgets using a for loop and append them to the for loop
 labels = []
 btns = []
 text_boxes = []
@@ -120,7 +121,10 @@ for i, text in enumerate(text_tasks):
     text_box = scrolledtext.ScrolledText(wrap=tk.WORD, state='disabled')
     text_box.grid(row=2*i+1, column=0)
     text_boxes.append(text_box)
-    btn = tk.Button(window, text=default_button_text, command=button_clicked(text_box))
+    btn = tk.Button(window,
+                    text=default_button_text,
+                    command=lambda scrolled_text_obj=text_box, idx=i:
+                    button_clicked(scrolled_text_obj, idx))
     btn.grid(row=2*i, column=1, sticky=tk.W)
     btns.append(btn)
 
