@@ -101,36 +101,35 @@ def button_clicked(scrolled_text_widget):
     scrolled_text_widget.configure(state='normal')
     scrolled_text_widget.delete('1.0', tk.END)
     scrolled_text_widget.insert(tk.END, '42')
-    scrolled_text_widget.configure(state='disabled')
+    #scrolled_text_widget.configure(state='disabled')
 
 # now try to build the widgets using a for-loop
-labels = [tk.Label(window)] * len(text_tasks)
-btns = [tk.Button(window)] * len(text_tasks)
-text_boxes = [scrolledtext.ScrolledText(window)] * len(text_tasks)
+labels = []
+btns = []
+text_boxes = []
 for i, text in enumerate(text_tasks):
 
     # set up label, button and text box
-    labels[i].configure(text=text,
-                        font=default_label_font,
-                        wraplength=label_wraplength,
-                        justify=tk.LEFT)
-    labels[i].grid(row=2*i, column=0, sticky=tk.W)
-    btns[i].configure(text=default_button_text)#, command=button_clicked(text_boxes[i]))
-    btns[i].grid(row=2*i, column=1, sticky=tk.W)
-    text_boxes[i].configure(wrap=tk.WORD, state='disabled')
-    text_boxes[i].grid(row=2*i+1, column=0)
+    label = tk.Label(window,
+                     text=text,
+                     font=default_label_font,
+                     wraplength=label_wraplength,
+                     justify=tk.LEFT)
+    label.grid(row=2*i, column=0, sticky=tk.W)
+    labels.append(label)
+    text_box = scrolledtext.ScrolledText(wrap=tk.WORD, state='disabled')
+    text_box.grid(row=2*i+1, column=0)
+    text_boxes.append(text_box)
+    btn = tk.Button(window, text=default_button_text, command=button_clicked(text_box))
+    btn.grid(row=2*i, column=1, sticky=tk.W)
+    btns.append(btn)
 
-# debug
-text_boxes[0].configure(state='normal')
-text_boxes[0].insert(tk.END, 'this is a test')
-text_boxes[0].configure(state='disabled')
-# somehow they are all treated the same ??? Why that???
 
 # test one case
 #btns[0].configure(command=button_clicked(text_boxes[0]))
 
 # for i, text in enumerate(text_tasks):
-#     
+#
 #     # link to functions
 #     def button_clicked(scrolled_text_widget):
 
