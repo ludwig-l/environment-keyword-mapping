@@ -28,7 +28,7 @@ window.geometry('600x800')
 # window.grid_rowconfigure(0, weight=1)
 # window.grid_columnconfigure(0, weight=1)
 
-
+'''
 # functions to execute actions
 
 def button_clicked():
@@ -92,5 +92,47 @@ label_t4.grid_rowconfigure(1)
 label_t4.grid_columnconfigure(1, weight=1)
 btn_t4 = tk.Button(window, text=default_button_text)
 btn_t4.grid(row=4, column=1)
+'''
+
+
+# now set up the connections between the buttons and the text boxes
+def button_clicked(scrolled_text_widget):
+    # write text to the button; need to disable and enable afterwards
+    scrolled_text_widget.configure(state='normal')
+    scrolled_text_widget.delete('1.0', tk.END)
+    scrolled_text_widget.insert(tk.END, '42')
+    scrolled_text_widget.configure(state='disabled')
+
+# now try to build the widgets using a for-loop
+labels = [tk.Label(window)] * len(text_tasks)
+btns = [tk.Button(window)] * len(text_tasks)
+text_boxes = [scrolledtext.ScrolledText(window)] * len(text_tasks)
+for i, text in enumerate(text_tasks):
+
+    # set up label, button and text box
+    labels[i].configure(text=text,
+                        font=default_label_font,
+                        wraplength=label_wraplength,
+                        justify=tk.LEFT)
+    labels[i].grid(row=2*i, column=0, sticky=tk.W)
+    btns[i].configure(text=default_button_text)#, command=button_clicked(text_boxes[i]))
+    btns[i].grid(row=2*i, column=1, sticky=tk.W)
+    text_boxes[i].configure(wrap=tk.WORD, state='disabled')
+    text_boxes[i].grid(row=2*i+1, column=0)
+
+# debug
+text_boxes[0].configure(state='normal')
+text_boxes[0].insert(tk.END, 'this is a test')
+text_boxes[0].configure(state='disabled')
+# somehow they are all treated the same ??? Why that???
+
+# test one case
+#btns[0].configure(command=button_clicked(text_boxes[0]))
+
+# for i, text in enumerate(text_tasks):
+#     
+#     # link to functions
+#     def button_clicked(scrolled_text_widget):
+
 
 window.mainloop()
