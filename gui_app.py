@@ -128,22 +128,29 @@ btns = []
 text_boxes = []
 for i, text in enumerate(text_tasks):
 
+    # select current column (will be 0 for the first 5 elements and 2 for the other 5 elements)
+    curr_col = 0
+    if i >= 5: curr_col = 2
+    # select current row (will be in the same column for numbers 4-9)
+    curr_row = i
+    if i >= 5: curr_row -= 5
+
     # set up label, button and text box
     label = tk.Label(window,
                      text=text,
                      font=default_label_font,
                      wraplength=label_wraplength,
                      justify=tk.LEFT)
-    label.grid(row=2*i, column=0, sticky=tk.W)
+    label.grid(row=2*curr_row, column=curr_col, sticky=tk.W)
     labels.append(label)
-    text_box = scrolledtext.ScrolledText(wrap=tk.WORD, state='disabled')
-    text_box.grid(row=2*i+1, column=0)
+    text_box = scrolledtext.ScrolledText(window, wrap=tk.WORD, state='disabled')
+    text_box.grid(row=2*curr_row+1, column=curr_col)
     text_boxes.append(text_box)
     btn = tk.Button(window,
                     text=default_button_text,
                     command=lambda scrolled_text_obj=text_box, idx=i:
                     button_clicked(scrolled_text_obj, idx))
-    btn.grid(row=2*i, column=1, sticky=tk.W)
+    btn.grid(row=2*curr_row, column=curr_col+1, sticky=tk.W)
     btns.append(btn)
 
 
