@@ -6,7 +6,7 @@ from tkinter import scrolledtext
 
 # some definitions
 default_button_text = 'Compute'
-default_label_font = ('Arial Bold', 12)
+default_label_font = ('Arial Bold', 11)
 text_tasks = [
     '1. Show Wikipedia pages for each keyword.',
     '2. Pre-process each dosument and calculate the cosine similarity measure of each document pair via Tf-Idf vectorizer approach.',
@@ -19,7 +19,9 @@ text_tasks = [
     '9. Retrieve articles from a news forum and retrieve information for different time periods. Display the word cloud representation for each document.',
     '10. Repeat the Tf-Idf based similarity calculus amoung each pair at each time.',
 ]
-label_wraplength = 1000 # length for each line before the label text does a line break
+label_wraplength = 850  # length for each line before the label text does a line break
+textbox_width = 117
+textbox_height = 9
 
 # set up screen
 window = tk.Tk()
@@ -143,8 +145,13 @@ for i, text in enumerate(text_tasks):
                      justify=tk.LEFT)
     label.grid(row=2*curr_row, column=curr_col, sticky=tk.W)
     labels.append(label)
-    text_box = scrolledtext.ScrolledText(window, wrap=tk.WORD, state='disabled')
-    text_box.grid(row=2*curr_row+1, column=curr_col)
+    window.grid_columnconfigure(curr_col)
+    text_box = scrolledtext.ScrolledText(window,
+                                         wrap=tk.WORD,
+                                         state='disabled',
+                                         height=textbox_height,
+                                         width=textbox_width)
+    text_box.grid(row=2*curr_row+1, column=curr_col, columnspan=2)
     text_boxes.append(text_box)
     btn = tk.Button(window,
                     text=default_button_text,
