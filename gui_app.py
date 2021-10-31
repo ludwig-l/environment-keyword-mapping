@@ -24,8 +24,7 @@ label_wraplength = 1000 # length for each line before the label text does a line
 # set up screen
 window = tk.Tk()
 window.title('Environment keyword mapping')
-window.geometry('600x800')
-
+window.geometry('1980x1080')
 
 # ------------------------------------------------------------------------------------------
 import wikipediaapi
