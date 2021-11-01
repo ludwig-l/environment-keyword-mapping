@@ -237,3 +237,14 @@ class Utils:
         for link in beautiful_soup.find_all("a"):
             page_entity_categories = page_entity_categories + " " + link.get("title", "")
         return page_entity_categories
+
+
+    ### Calculate the word2vec similarity score using a pre-trained model ###
+    def calc_word2vec_scores(self, file_path):
+        keywords = ['nature', 'pollution', 'sustainability', 'environmental']
+        model = KeyedVectors.load_word2vec_format(file_path, binary=True)
+        scores = []
+        for pair in list(combinations(keywords, 2)):
+            score = model.similarity(pair[0], pair[1])
+            scores.append((pair, score))
+        return scores
