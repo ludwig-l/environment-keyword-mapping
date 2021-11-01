@@ -8,3 +8,4 @@ sklearn
 pynytimes
 gensim
 pandas
+psutils
