@@ -24,6 +24,9 @@ import math
 import os
 import psutil
 from gensim.models import KeyedVectors
+import datetime
+from pynytimes import NYTAPI
+from wordcloud import WordCloud
 
 
 class Utils:
@@ -42,6 +45,176 @@ class Utils:
         self.one_pass_entity_list_corpus = dict([])
         self.one_pass_entity_list_tfidf_results = {}
         self.one_pass_entity_list_cosine_results = {}
+        self.news_forum_data  = {
+            'nature' : {
+                '2001-2004' : {
+                    'titles' : [],
+                    'urls' : [],
+                    'abstracts' : [],
+                    'snippets' : [],
+                    'lead_paragraphs' : [],
+                    'doc' : ''
+                },
+                '2005-2008' : {
+                    'titles' : [],
+                    'urls' : [],
+                    'abstracts' : [],
+                    'snippets' : [],
+                    'lead_paragraphs' : [],
+                    'doc' : ''
+                },
+                '2009-2012' : {
+                    'titles' : [],
+                    'urls' : [],
+                    'abstracts' : [],
+                    'snippets' : [],
+                    'lead_paragraphs' : [],
+                    'doc' : ''
+                },
+                '2013-2016' : {
+                    'titles' : [],
+                    'urls' : [],
+                    'abstracts' : [],
+                    'snippets' : [],
+                    'lead_paragraphs' : [],
+                    'doc' : ''
+                },
+                '2017-2020' : {
+                    'titles' : [],
+                    'urls' : [],
+                    'abstracts' : [],
+                    'snippets' : [],
+                    'lead_paragraphs' : [],
+                    'doc' : ''
+                },
+            },
+            'pollution' : {
+                '2001-2004' : {
+                    'titles' : [],
+                    'urls' : [],
+                    'abstracts' : [],
+                    'snippets' : [],
+                    'lead_paragraphs' : [],
+                    'doc' : ''
+                },
+                '2005-2008' : {
+                    'titles' : [],
+                    'urls' : [],
+                    'abstracts' : [],
+                    'snippets' : [],
+                    'lead_paragraphs' : [],
+                    'doc' : ''
+                },
+                '2009-2012' : {
+                    'titles' : [],
+                    'urls' : [],
+                    'abstracts' : [],
+                    'snippets' : [],
+                    'lead_paragraphs' : [],
+                    'doc' : ''
+                },
+                '2013-2016' : {
+                    'titles' : [],
+                    'urls' : [],
+                    'abstracts' : [],
+                    'snippets' : [],
+                    'lead_paragraphs' : [],
+                    'doc' : ''
+                },
+                '2017-2020' : {
+                    'titles' : [],
+                    'urls' : [],
+                    'abstracts' : [],
+                    'snippets' : [],
+                    'lead_paragraphs' : [],
+                    'doc' : ''
+                },
+            },
+            'sustainability' : {
+                '2001-2004' : {
+                    'titles' : [],
+                    'urls' : [],
+                    'abstracts' : [],
+                    'snippets' : [],
+                    'lead_paragraphs' : [],
+                    'doc' : ''
+                },
+                '2005-2008' : {
+                    'titles' : [],
+                    'urls' : [],
+                    'abstracts' : [],
+                    'snippets' : [],
+                    'lead_paragraphs' : [],
+                    'doc' : ''
+                },
+                '2009-2012' : {
+                    'titles' : [],
+                    'urls' : [],
+                    'abstracts' : [],
+                    'snippets' : [],
+                    'lead_paragraphs' : [],
+                    'doc' : ''
+                },
+                '2013-2016' : {
+                    'titles' : [],
+                    'urls' : [],
+                    'abstracts' : [],
+                    'snippets' : [],
+                    'lead_paragraphs' : [],
+                    'doc' : ''
+                },
+                '2017-2020' : {
+                    'titles' : [],
+                    'urls' : [],
+                    'abstracts' : [],
+                    'snippets' : [],
+                    'lead_paragraphs' : [],
+                    'doc' : ''
+                },
+            },
+            'environmentally friendly' : {
+                '2001-2004' : {
+                    'titles' : [],
+                    'urls' : [],
+                    'abstracts' : [],
+                    'snippets' : [],
+                    'lead_paragraphs' : [],
+                    'doc' : ''
+                },
+                '2005-2008' : {
+                    'titles' : [],
+                    'urls' : [],
+                    'abstracts' : [],
+                    'snippets' : [],
+                    'lead_paragraphs' : [],
+                    'doc' : ''
+                },
+                '2009-2012' : {
+                    'titles' : [],
+                    'urls' : [],
+                    'abstracts' : [],
+                    'snippets' : [],
+                    'lead_paragraphs' : [],
+                    'doc' : ''
+                },
+                '2013-2016' : {
+                    'titles' : [],
+                    'urls' : [],
+                    'abstracts' : [],
+                    'snippets' : [],
+                    'lead_paragraphs' : [],
+                    'doc' : ''
+                },
+                '2017-2020' : {
+                    'titles' : [],
+                    'urls' : [],
+                    'abstracts' : [],
+                    'snippets' : [],
+                    'lead_paragraphs' : [],
+                    'doc' : ''
+                },
+            }
+        }
 
     # function definitions
     ### Initial setup (Task 1) - unprocessed pages, subsections, and list of entities (except references) extracted ###
@@ -247,4 +420,81 @@ class Utils:
         for pair in list(combinations(keywords, 2)):
             score = model.similarity(pair[0], pair[1])
             scores.append((pair, score))
+        return scores
+
+
+    ### Retrieve a desired amount of articles using the New York Times API ###
+    def retrieve_articles(self, n_articles, data_struct):
+        # definitions for the news forum API
+        api_key = ''
+        with open('nytimes_api_key.txt', 'r') as file:
+            api_key = file.read()
+        nyt = NYTAPI(key=api_key, parse_dates=True)
+
+        # retrieve the articles
+        for keyword in data_struct:
+            print(keyword)
+            for year in data_struct[keyword]:
+
+                print('---', year) # progress information
+
+                # define the two needed datetime objects
+                date_begin = datetime.datetime.fromisoformat(year[:4] + '-01-01')
+                date_end = datetime.datetime.fromisoformat(year[5:] + '-12-31')
+
+                # API call for the desired information
+                retrieved_articles = nyt.article_search(
+                    query = keyword,
+                    results = n_articles,
+                    dates = {
+                        'begin': date_begin,
+                        'end': date_end
+                    },
+                    options = {
+                        'sort': 'relevance',
+                        'sources': 'New York Times'
+                    }
+                )
+
+                # collect data of interest
+                for i, article_data in enumerate(retrieved_articles):
+                    data_struct[keyword][year]['titles'].append(article_data['headline']['main'])
+                    data_struct[keyword][year]['urls'].append(article_data['web_url'])
+                    data_struct[keyword][year]['abstracts'].append(article_data['abstract'])
+                    data_struct[keyword][year]['snippets'].append(article_data['snippet'])
+                    data_struct[keyword][year]['lead_paragraphs'].append(article_data['lead_paragraph'])
+
+                # join each title together to one document and pre-process the text
+                #data[keyword][year]['doc'] = preprocess_and_lemmatize(' '.join(data[keyword][year]['titles']))
+                data_struct[keyword][year]['doc'] = self.preprocess_and_lemmatize(' '.join(
+                    data_struct[keyword][year]['abstracts']))
+
+
+    ### Create word clouds, plot and save them
+    def display_word_cloud_represenations(self, data_struct):
+        for keyword in data_struct:
+            for year in data_struct[keyword]:
+                # generate the wordcloud from the documents
+                wordcloud = WordCloud().generate(data_struct[keyword][year]['doc'])
+                # plot
+                plt.imshow(wordcloud, interpolation='bilinear')
+                plt.axis('off')
+                plt.savefig('word_cloud_' + keyword + '_' + year + '.png', bbox_inches = 'tight', pad_inches = 0)
+                # save the figure before adding title and after turing off the axis, otherwise the saved picture will be ugly
+                plt.title('Word cloud representation for keyword \"' + keyword + '\" for time period ' + year)
+                plt.show()
+
+
+    ### Calculate the Tf-Idf scores based on input data ###
+    def calc_tfidf_scores(self, data_struct):
+
+        # now compute the score for all the possible pairs
+        scores = []
+        for pair in list(combinations(data_struct, 2)):
+            for year in data_struct['nature']: # just using the first entry here for simplicity (ad)
+                score = cosine_similarity(data_struct[pair[0]][year]['doc'],
+                                          data_struct[pair[1]][year]['doc'])
+                print('-> Score for', pair, 'for years', year, score)
+                scores.append((pair, year), score)
+
         return scores
