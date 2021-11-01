@@ -23,12 +23,13 @@ import matplotlib.pyplot as plt
 import math
 import os
 import psutil
+from gensim.models import KeyedVectors
 
 
 class Utils:
     def __init__(self):
-        # something something ...
         self.everything_corpus = ""
+        self.all_document_corpus = ""
         self.single_document_corpus = dict([])
         self.all_document_tfidf_results = {}
         self.all_document_cosine_results = {}
@@ -165,20 +166,20 @@ class Utils:
                 document = unprocessed_documents[key]
                 corpus = corpus + self.preprocess_and_lemmatize(document)
                 self.single_document_corpus[key]= corpus
-            all_document_corpus = corpus
+            self.all_document_corpus = corpus
         elif type == "subsections":
             for key in self.page_subsections:
                 for list in self.page_subsections[key]:
                     all_sections = self.get_sections(list.sections)
                     corpus = corpus + " " + self.preprocess_and_lemmatize(all_sections)
                 self.subsections_corpus[key] = corpus
-            all_document_corpus = corpus
+            self.all_document_corpus = corpus
         elif type == "keywords":
             for key in self.page_entities_list:
                 for title in self.page_entities_list[key]:
                     corpus = corpus + " " + self.preprocess_and_lemmatize(title)
                 self.entity_list_corpus[key] = corpus
-            all_document_corpus = corpus
+            self.all_document_corpus = corpus
         else:
             for key in self.all_one_pass_entity_categories:
                 corpus = corpus + " " + self.preprocess_and_lemmatize(self.all_one_pass_entity_categories[key])
