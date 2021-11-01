@@ -15,7 +15,7 @@ text_tasks = [
     '5. Calculate Wu and Palmer semantic similarity between each keyword pari and calculate the correlation between the sementic similarity result and each of the three Wikipedia based similarities.',
     '6. Scrap content of each entity and retrieve all the entity-categories identified during this first exploration stage (first pass exploration).',
     '7. Repeat Tf-Idf vectorizer representation and recalculate the cosine similarity between individual words of the four keywords.',
-    '8. Use a pre-trained word2vec model to represent each words and calculate the corresponding similarity.',
+    '8. Use a pre-trained word2vec model to represent each words and calculate the corresponding similarity (place the model file inside your local user\'s downloads folder).',
     '9. Retrieve articles from a news forum and retrieve information for different time periods. Display the word cloud representation for each document.',
     '10. Repeat the Tf-Idf based similarity calculus amoung each pair at each time.',
 ]
