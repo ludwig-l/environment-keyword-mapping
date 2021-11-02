@@ -2,6 +2,7 @@
 
 import tkinter as tk
 from tkinter import scrolledtext
+from utils import Utils
 
 
 # some definitions
@@ -34,6 +35,7 @@ import requests
 from bs4 import BeautifulSoup
 from typing import OrderedDict
 
+'''
 # here some functions from the main script for testing ...
 
 def setup():
@@ -112,17 +114,34 @@ def setup():
     ])
 
 # ------------------------------------------------------------------------------------------
-
+'''
 
 # now set up the connections between the buttons and the text boxes
 def button_clicked(scrolled_text_widget, idx):
     # write text to the button; need to disable and enable afterwards
     scrolled_text_widget.configure(state='normal')
     scrolled_text_widget.delete('1.0', tk.END)
+
+    # check for page the button is belonging to and execute the respective function then
+
+    # task 1
     if idx == 0:
-        setup()
-        scrolled_text_widget.insert(tk.END, unprocessed_page['nature'])
+        obj.setup()
+        scrolled_text_widget.insert(tk.END, 'Script will fetch the wikipedia pages now...\nContent of the wikipedia pages:\n\n')
+        scrolled_text_widget.insert(tk.END, obj.unprocessed_page['nature'])
+        scrolled_text_widget.insert(tk.END, '\n\n----------------------------------------\n\n')
+        scrolled_text_widget.insert(tk.END, obj.unprocessed_page['pollution'])
+        scrolled_text_widget.insert(tk.END, '\n\n----------------------------------------\n\n')
+        scrolled_text_widget.insert(tk.END, obj.unprocessed_page['sustainability'])
+        scrolled_text_widget.insert(tk.END, '\n\n----------------------------------------\n\n')
+        scrolled_text_widget.insert(tk.END, obj.unprocessed_page['environmentally_friendly'])
+
+
     scrolled_text_widget.configure(state='disabled')
+
+
+# create on object for all the utility functions
+obj = Utils()
 
 # build the widgets using a for loop and append them to the for loop
 labels = []
