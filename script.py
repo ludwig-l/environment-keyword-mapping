@@ -24,35 +24,36 @@ import psutil
 from utils import Utils # import from own class
 
 
-# global variables to store results
-global everything_corpus
-global all_document_corpus
-global all_document_tfidf_results
-global all_document_cosine_results
-global subsections_corpus
-global subsections_tfidf_results
-global subsections_cosine_results
-global entity_list_corpus
-global entity_list_tfidf_results
-global entity_list_cosine_results
-global one_pass_entity_list_corpus
-global one_pass_entity_list_tfidf_results
-global one_pass_entity_list_cosine_results
+## global variables to store results
+#global everything_corpus
+#global all_document_corpus
+#global all_document_tfidf_results
+#global all_document_cosine_results
+#global subsections_corpus
+#global subsections_tfidf_results
+#global subsections_cosine_results
+#global entity_list_corpus
+#global entity_list_tfidf_results
+#global entity_list_cosine_results
+#global one_pass_entity_list_corpus
+#global one_pass_entity_list_tfidf_results
+#global one_pass_entity_list_cosine_results
+#
+## initialize global variables
+#everything_corpus = ""
+#single_document_corpus = dict([])
+#all_document_tfidf_results = {}
+#all_document_cosine_results = {}
+#subsections_corpus = dict([])
+#subsections_tfidf_results = {}
+#subsections_cosine_results = {}
+#entity_list_corpus = dict([])
+#entity_list_tfidf_results = {}
+#entity_list_cosine_results = {}
+#one_pass_entity_list_corpus = dict([])
+#one_pass_entity_list_tfidf_results = {}
+#one_pass_entity_list_cosine_results = {}
 
-# initialize global variables
-everything_corpus = ""
-single_document_corpus = dict([])
-all_document_tfidf_results = {}
-all_document_cosine_results = {}
-subsections_corpus = dict([])
-subsections_tfidf_results = {}
-subsections_cosine_results = {}
-entity_list_corpus = dict([])
-entity_list_tfidf_results = {}
-entity_list_cosine_results = {}
-one_pass_entity_list_corpus = dict([])
-one_pass_entity_list_tfidf_results = {}
-one_pass_entity_list_cosine_results = {}
 
 # ensure that there are no verified context errors for nltk
 try:
@@ -64,7 +65,7 @@ else:
 nltk.download('stopwords')
 
 
-
+'''
 ### Initial setup (Task 1) - unprocessed pages, subsections, and list of entities (except references) extracted ###
 
 def setup():
@@ -72,14 +73,14 @@ def setup():
         language='en',
         extract_format=wikipediaapi.ExtractFormat.WIKI
     )
-    global unprocessed_page 
+    global unprocessed_page
     unprocessed_page = dict([
         ('nature', wikipedia.page('Nature').text),
         ('pollution', wikipedia.page('pollution').text),
         ('sustainability', wikipedia.page('sustainability').text),
         ('environmentally_friendly', wikipedia.page('environmentally friendly').text)
     ])
-    global page_subsections 
+    global page_subsections
     page_subsections = dict([
         ('nature', wikipedia.page('Nature').sections),
         ('pollution', wikipedia.page('pollution').sections),
@@ -144,7 +145,7 @@ def setup():
 
 ### Preprocessing and lemmatizing a single document ###
 
-def preprocess_and_lemmatize(document):      
+def preprocess_and_lemmatize(document):
     corpus_part = ""
     # preprocess
     # to lowercase
@@ -178,8 +179,8 @@ def preprocess_and_lemmatize(document):
 def get_sections(sections, level=0):
     all_sections = ""
     for section in sections:
-                   all_sections = all_sections + section.title + " "
-                   get_sections(section.sections, level + 1)
+        all_sections = all_sections + section.title + " "
+        get_sections(section.sections, level + 1)
     return all_sections
 
 ### Combining preprocessed and lemmatized documents into a corpus (Task 2A, 3A, 4A) ###
@@ -262,6 +263,7 @@ def entity_category_scraper(entity_category):
     for link in beautiful_soup.find_all("a"):
         page_entity_categories = page_entity_categories + " " + link.get("title", "")
     return page_entity_categories
+'''
 
 ### main ###
 
@@ -288,14 +290,14 @@ obj.corpus_creation(obj.page_subsections, 'subsections')
 obj.corpus_creation(obj.page_entities_list, 'keywords')
 #print(entity_list_corpus['nature'])
 #print(everything_corpus)   # combination of all documents into one corpus
-obj.all_cosine_results = array.array('d', [])
 
+all_cosine_results = array.array('d', [])
 for pair in list(combinations(list(obj.single_document_corpus), 2)):
     #print(pair[0] + " " + pair[1])
-    obj.tfidf_results = vectorizer(obj.single_document_corpus[pair[0]],
+    obj.tfidf_results = obj.vectorizer(obj.single_document_corpus[pair[0]],
                                    obj.single_document_corpus[pair[1]])
     #print(tfidf_results)
-    obj.all_cosine_results.append(
+    all_cosine_results.append(
         obj.calculate_cosine_similarity(obj.single_document_corpus[pair[0]],
                                         obj.single_document_corpus[pair[1]]))
     obj.cosine_result = obj.calculate_cosine_similarity(
@@ -306,20 +308,22 @@ for pair in list(combinations(list(obj.single_document_corpus), 2)):
 #print(all_cosine_results)
 
 # Task 3: Repeat but with the titles of subsections
-for pair in list(combinations(list(subsections_corpus), 2)):
+for pair in list(combinations(list(obj.subsections_corpus), 2)):
     #print(pair[0] + " " + pair[1])
-    tfidf_results = vectorizer(subsections_corpus[pair[0]], subsections_corpus[pair[1]])
+    tfidf_results = obj.vectorizer(obj.subsections_corpus[pair[0]], obj.subsections_corpus[pair[1]])
     #print(tfidf_results)
-    cosine_results = calculate_cosine_similarity(subsections_corpus[pair[0]], subsections_corpus[pair[1]])
+    cosine_results = obj.calculate_cosine_similarity(
+        obj.subsections_corpus[pair[0]], obj.subsections_corpus[pair[1]])
     #print(pair[0] + " " + pair[1])
     #print(cosine_results)
 
 # Task 4: Repeat but with the entity-categories
-for pair in list(combinations(list(entity_list_corpus), 2)):
+for pair in list(combinations(list(obj.entity_list_corpus), 2)):
     #print(pair[0] + " " + pair[1])
-    tfidf_results = vectorizer(entity_list_corpus[pair[0]], entity_list_corpus[pair[1]])
+    tfidf_results = obj.vectorizer(obj.entity_list_corpus[pair[0]], obj.entity_list_corpus[pair[1]])
     #print(tfidf_results)
-    cosine_results = calculate_cosine_similarity(entity_list_corpus[pair[0]], entity_list_corpus[pair[1]])
+    cosine_results = obj.calculate_cosine_similarity(
+        obj.entity_list_corpus[pair[0]], obj.entity_list_corpus[pair[1]])
     #print(pair[0] + " " + pair[1])
     #print(cosine_results)
 
@@ -328,7 +332,7 @@ for pair in list(combinations(list(entity_list_corpus), 2)):
 pair_words = ['nature', 'pollution', 'sustainability', 'environment']
 all_wupalmer_results = array.array('d', [])
 for pair in combinations(pair_words, 2):
-    all_wupalmer_results.append(calculate_wupalmer(pair[0], pair[1]))
+    all_wupalmer_results.append(obj.calculate_wupalmer(pair[0], pair[1]))
     #print(pair[0] + " " + pair[1])
     #print(calculate_wupalmer(pair[0], pair[1]))
 #print(all_cosine_results)
@@ -348,28 +352,30 @@ wu_wiki_correlation = pearsonr(all_wupalmer_results, all_cosine_results)
 #print(wu_wiki_correlation)
 
 # Task 6: Scrape content of each entity and retrieve all clickable keywords identified
-global all_one_pass_entity_categories
-all_one_pass_entity_categories = {}
-for key in page_entities_list:
-    one_pass_entities = ""       
-    for entity_category in page_entities_list[key]:
-        if "https://" in page_entities_list[key][entity_category]:
+for key in obj.page_entities_list:
+    one_pass_entities = ""
+    for entity_category in obj.page_entities_list[key]:
+        if "https://" in obj.page_entities_list[key][entity_category]:
             break
         else:
-            entity_category_scrape = entity_category_scraper(page_entities_list[key][entity_category])
+            entity_category_scrape = obj.entity_category_scraper(
+                obj.page_entities_list[key][entity_category])
         one_pass_entities = one_pass_entities + " " + entity_category_scrape
         break
-    all_one_pass_entity_categories[key] = one_pass_entities
+    obj.all_one_pass_entity_categories[key] = one_pass_entities
 #print(all_one_pass_entity_categories)
 
 # Task 7: Perform tfidf and cosine similarity on the scraped entity list
-corpus_creation(all_one_pass_entity_categories, "keywords_2")
+obj.corpus_creation(obj.all_one_pass_entity_categories, "keywords_2")
 #print(one_pass_entity_list_corpus)
-for pair in list(combinations(list(one_pass_entity_list_corpus), 2)):
+for pair in list(combinations(list(obj.one_pass_entity_list_corpus), 2)):
     #print(pair[0] + " " + pair[1])
-    tfidf_results = vectorizer(one_pass_entity_list_corpus[pair[0]], one_pass_entity_list_corpus[pair[1]])
+    tfidf_results = obj.vectorizer(obj.one_pass_entity_list_corpus[pair[0]],
+                               obj.one_pass_entity_list_corpus[pair[1]])
     #print(tfidf_results)
-    cosine_results = calculate_cosine_similarity(one_pass_entity_list_corpus[pair[0]], one_pass_entity_list_corpus[pair[1]])
+    cosine_results = obj.calculate_cosine_similarity(
+        obj.one_pass_entity_list_corpus[pair[0]],
+        obj.one_pass_entity_list_corpus[pair[1]])
     #print(cosine_results)
 
 #print('memory use:', memoryUse)
