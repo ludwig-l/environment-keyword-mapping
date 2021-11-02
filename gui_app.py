@@ -3,6 +3,8 @@
 import tkinter as tk
 from tkinter import scrolledtext
 from utils import Utils
+import array
+from itertools import combinations
 
 
 # some definitions
@@ -138,6 +140,29 @@ def button_clicked(scrolled_text_widget, idx):
         scrolled_text_widget.insert(tk.END, obj.unprocessed_page['sustainability'])
         scrolled_text_widget.insert(tk.END, '\n\n----------------------------------------\n\n')
         scrolled_text_widget.insert(tk.END, obj.unprocessed_page['environmentally_friendly'])
+
+    # task 2
+    if idx == 1:
+        obj.corpus_creation(obj.unprocessed_page, 'pages')
+        obj.corpus_creation(obj.page_subsections, 'subsections')
+        obj.corpus_creation(obj.page_entities_list, 'keywords')
+
+        all_cosine_results = array.array('d', [])
+        for pair in list(combinations(list(obj.single_document_corpus), 2)):
+            #print(pair[0] + " " + pair[1])
+            obj.tfidf_results = obj.vectorizer(obj.single_document_corpus[pair[0]],
+                                        obj.single_document_corpus[pair[1]])
+            #print(tfidf_results)
+            all_cosine_results.append(
+                obj.calculate_cosine_similarity(obj.single_document_corpus[pair[0]],
+                                                obj.single_document_corpus[pair[1]]))
+            obj.cosine_result = obj.calculate_cosine_similarity(
+                obj.single_document_corpus[pair[0]],
+                obj.single_document_corpus[pair[1]])
+
+        scrolled_text_widget.insert(tk.END, list(combinations(list(obj.single_document_corpus), 2)))
+        scrolled_text_widget.insert(tk.END, '\n')
+        scrolled_text_widget.insert(tk.END, all_cosine_results)
 
 
     scrolled_text_widget.configure(state='disabled')
