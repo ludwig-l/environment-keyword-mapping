@@ -162,8 +162,4 @@ obj.retrieve_articles(n_news_forum_articles, obj.news_forum_data)
 obj.display_word_cloud_represenations(obj.news_forum_data)
 
 # Task 10: Calculate the Tf-Idf scores for each keyword pair for each time period based on the news forum data
-print('check data first:\n')
-print(obj.news_forum_data['nature']['2001-2004']['doc'])
-print(obj.news_forum_data['pollution']['2001-2004']['doc'])
-print(obj.news_forum_data)
 obj.calc_tfidf_scores_news_forum(obj.news_forum_data)
