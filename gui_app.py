@@ -5,6 +5,7 @@ from tkinter import scrolledtext
 from utils import Utils
 import array
 from itertools import combinations
+from scipy.stats import pearsonr
 
 
 # some definitions
@@ -73,6 +74,9 @@ def button_clicked(scrolled_text_widget, idx):
             obj.cosine_result = obj.calculate_cosine_similarity(
                 obj.single_document_corpus[pair[0]],
                 obj.single_document_corpus[pair[1]])
+                
+        # assign value to helper variable in order to use this value later on again in this script
+        obj.all_cosine_results = all_cosine_results
 
         scrolled_text_widget.insert(tk.END, list(combinations(list(obj.single_document_corpus), 2)))
         scrolled_text_widget.insert(tk.END, '\n')
@@ -121,9 +125,18 @@ def button_clicked(scrolled_text_widget, idx):
         for pair in combinations(pair_words, 2):
             all_wupalmer_results.append(obj.calculate_wupalmer(pair[0], pair[1]))
 
+        wu_wiki_correlation = pearsonr(all_wupalmer_results, obj.all_cosine_results)
+
+        scrolled_text_widget.insert(tk.END, 'Wu and Palmer semantic similarity results:\n\n')
         scrolled_text_widget.insert(tk.END, list(combinations(pair_words, 2)))
         scrolled_text_widget.insert(tk.END, '\n')
         scrolled_text_widget.insert(tk.END, all_wupalmer_results)
+        scrolled_text_widget.insert(tk.END, '\n\n----------------------------------------\n\n')
+        scrolled_text_widget.insert(tk.END, 'Correlation between the sementic similarity result and each of the three Wikipedia based similarities:\n')
+        scrolled_text_widget.insert(tk.END, '\n')
+        scrolled_text_widget.insert(tk.END, wu_wiki_correlation)
+
+
 
 
     scrolled_text_widget.configure(state='disabled')

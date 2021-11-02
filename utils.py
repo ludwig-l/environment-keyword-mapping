@@ -46,6 +46,7 @@ class Utils:
         self.one_pass_entity_list_tfidf_results = {}
         self.one_pass_entity_list_cosine_results = {}
         self.all_one_pass_entity_categories = {}
+        self.all_cosine_results = array.array('d', []) # used in GUI application later on
         self.news_forum_data  = {
             'nature' : {
                 '2001-2004' : {
