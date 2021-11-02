@@ -170,6 +170,14 @@ def button_clicked(scrolled_text_widget, idx):
         scrolled_text_widget.insert(tk.END, '\n')
         scrolled_text_widget.insert(tk.END, cosine_results_list)
 
+    # task 8
+    if idx == 7:
+        word2vec_model_file_path = '~/Downloads/GoogleNews-vectors-negative300.bin'
+        keywords = ['nature', 'pollution', 'sustainability', 'environmental']
+        word2vec_scores = obj.calc_word2vec_scores(keywords, word2vec_model_file_path)
+
+        scrolled_text_widget.insert(tk.END, word2vec_scores)
+
 
     scrolled_text_widget.configure(state='disabled')
 
