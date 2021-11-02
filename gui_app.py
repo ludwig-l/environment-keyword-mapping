@@ -74,7 +74,7 @@ def button_clicked(scrolled_text_widget, idx):
             obj.cosine_result = obj.calculate_cosine_similarity(
                 obj.single_document_corpus[pair[0]],
                 obj.single_document_corpus[pair[1]])
-                
+
         # assign value to helper variable in order to use this value later on again in this script
         obj.all_cosine_results = all_cosine_results
 
@@ -136,7 +136,21 @@ def button_clicked(scrolled_text_widget, idx):
         scrolled_text_widget.insert(tk.END, '\n')
         scrolled_text_widget.insert(tk.END, wu_wiki_correlation)
 
-
+    # task 6
+    if idx == 5:
+        for key in obj.page_entities_list:
+            one_pass_entities = ""
+            for entity_category in obj.page_entities_list[key]:
+                if "https://" in obj.page_entities_list[key][entity_category]:
+                    break
+                else:
+                    entity_category_scrape = obj.entity_category_scraper(
+                        obj.page_entities_list[key][entity_category])
+                one_pass_entities = one_pass_entities + " " + entity_category_scrape
+                break
+            obj.all_one_pass_entity_categories[key] = one_pass_entities
+    
+        scrolled_text_widget.insert(tk.END, obj.all_one_pass_entity_categories)
 
 
     scrolled_text_widget.configure(state='disabled')
