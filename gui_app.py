@@ -12,19 +12,19 @@ from scipy.stats import pearsonr
 default_button_text = 'Compute'
 default_label_font = ('Arial Bold', 11)
 text_tasks = [
-    '1. Show Wikipedia pages for each keyword.',
-    '2. Pre-process each dosument and calculate the cosine similarity measure of each document pair via Tf-Idf vectorizer approach.',
-    '3. Show all titles of subsections of the Wikipedia pages and repeat the similarity score calculation.',
-    '4. Show entity categories of the Wikipedia pages and repeat the similarity score calculation.',
-    '5. Calculate Wu and Palmer semantic similarity between each keyword pari and calculate the correlation between the sementic similarity result and each of the three Wikipedia based similarities.',
-    '6. Scrap content of each entity and retrieve all the entity-categories identified during this first exploration stage (first pass exploration).',
-    '7. Repeat Tf-Idf vectorizer representation and recalculate the cosine similarity between individual words of the four keywords.',
-    '8. Use a pre-trained word2vec model to represent each words and calculate the corresponding similarity (place the model file inside your local user\'s downloads folder).',
+    '1. Show a preview of each page\'s corresponding Wikipedia page.',
+    '2. Pre-process each document and calculate the cosine similarity of each document pair using tf-idf.',
+    '3. Repeat the similarity score calculation on the Wikipedia subsection titles.',
+    '4. Repeat the similarity score calculation on the Wikipedia entity categories.',
+    '5. Calculate Wu and Palmer semantic similarity between each keyword pair and calculate the correlation between that result and the Wikipedia cosine similarity result.',
+    '6. Scrape the content of each entity and retrieve all the entity-categories identified using first pass exploration (This task can take several minutes to complete).',
+    '7. Perform tf-idf and cosine similarity on the scraped entity list for each keyword Wikipedia page.',
+    '8. Use a pre-trained word2vec model to represent each keyword and calculate the corresponding similarity (place the model file inside your local user\'s downloads folder).',
     '9. Retrieve articles from a news forum and retrieve information for different time periods. Display the word cloud representation for each document.',
-    '10. Repeat the Tf-Idf based similarity calculus amoung each pair at each time.',
+    '10. Repeat the tf-idf based similarity calculus between each pair at each time.',
 ]
-label_wraplength = 850  # length for each line before the label text does a line break
-textbox_width = 117
+label_wraplength = 650  # length for each line before the label text does a line break
+textbox_width = 100
 textbox_height = 9
 
 # set up screen
@@ -32,14 +32,13 @@ window = tk.Tk()
 window.title('Environment keyword mapping')
 window.geometry('1980x1080')
 
-
 # now set up the connections between the buttons and the text boxes
 def button_clicked(scrolled_text_widget, idx):
     # write text to the button; need to disable and enable afterwards
     scrolled_text_widget.configure(state='normal')
     scrolled_text_widget.delete('1.0', tk.END)
 
-    # check for page the button is belonging to and execute the respective function then
+    # check for the page the button belongs to and execute the respective function then
 
     # task 1
     if idx == 0:
@@ -64,10 +63,8 @@ def button_clicked(scrolled_text_widget, idx):
 
         all_cosine_results = array.array('d', [])
         for pair in list(combinations(list(obj.single_document_corpus), 2)):
-            #print(pair[0] + " " + pair[1])
             obj.tfidf_results = obj.vectorizer(obj.single_document_corpus[pair[0]],
                                         obj.single_document_corpus[pair[1]])
-            #print(tfidf_results)
             all_cosine_results.append(
                 obj.calculate_cosine_similarity(obj.single_document_corpus[pair[0]],
                                                 obj.single_document_corpus[pair[1]]))
@@ -84,7 +81,7 @@ def button_clicked(scrolled_text_widget, idx):
 
     # task 3
     if idx == 2:
-        scrolled_text_widget.insert(tk.END, obj.page_subsections)
+        #scrolled_text_widget.insert(tk.END, obj.page_subsections)
 
         cosine_results_list = []
         for pair in list(combinations(list(obj.subsections_corpus), 2)):
@@ -101,7 +98,7 @@ def button_clicked(scrolled_text_widget, idx):
 
     # task 4
     if idx == 3:
-        scrolled_text_widget.insert(tk.END, obj.page_entities_list)
+        #scrolled_text_widget.insert(tk.END, obj.page_entities_list)
 
         cosine_results_list = []
         for pair in list(combinations(list(obj.entity_list_corpus), 2)):
