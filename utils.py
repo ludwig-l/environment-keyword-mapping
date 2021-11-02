@@ -492,9 +492,10 @@ class Utils:
         scores = []
         for pair in list(combinations(data_struct, 2)):
             for year in data_struct['nature']: # just using the first entry here for simplicity (ad)
-                score = cosine_similarity(data_struct[pair[0]][year]['doc'],
-                                          data_struct[pair[1]][year]['doc'])
+                score = self.calculate_cosine_similarity(
+                    data_struct[pair[0]][year]['doc'],
+                    data_struct[pair[1]][year]['doc'])
                 print('-> Score for', pair, 'for years', year, score)
-                scores.append((pair, year), score)
+                scores.append(((pair, year), score))
 
         return scores
