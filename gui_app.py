@@ -164,6 +164,23 @@ def button_clicked(scrolled_text_widget, idx):
         scrolled_text_widget.insert(tk.END, '\n')
         scrolled_text_widget.insert(tk.END, all_cosine_results)
 
+    # task 3
+    if idx == 2:
+        scrolled_text_widget.insert(tk.END, obj.page_subsections)
+
+        cosine_results_list = []
+        for pair in list(combinations(list(obj.subsections_corpus), 2)):
+            tfidf_results = obj.vectorizer(obj.subsections_corpus[pair[0]], obj.subsections_corpus[pair[1]])
+            cosine_results = obj.calculate_cosine_similarity(
+                obj.subsections_corpus[pair[0]], obj.subsections_corpus[pair[1]])
+            cosine_results_list.append(cosine_results)
+
+        scrolled_text_widget.insert(tk.END, '\n\n----------------------------------------\n\n')
+        scrolled_text_widget.insert(tk.END, 'Cosine similarity results:\n\n')
+        scrolled_text_widget.insert(tk.END, list(combinations(list(obj.subsections_corpus), 2)))
+        scrolled_text_widget.insert(tk.END, '\n')
+        scrolled_text_widget.insert(tk.END, cosine_results_list)
+
 
     scrolled_text_widget.configure(state='disabled')
 
