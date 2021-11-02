@@ -126,8 +126,11 @@ def button_clicked(scrolled_text_widget, idx):
 
     # task 1
     if idx == 0:
+        scrolled_text_widget.insert(
+            tk.END,
+            'Script will fetch the wikipedia pages now...\nContent of the wikipedia pages:\n\n'
+        )
         obj.setup()
-        scrolled_text_widget.insert(tk.END, 'Script will fetch the wikipedia pages now...\nContent of the wikipedia pages:\n\n')
         scrolled_text_widget.insert(tk.END, obj.unprocessed_page['nature'])
         scrolled_text_widget.insert(tk.END, '\n\n----------------------------------------\n\n')
         scrolled_text_widget.insert(tk.END, obj.unprocessed_page['pollution'])
