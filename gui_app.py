@@ -149,8 +149,26 @@ def button_clicked(scrolled_text_widget, idx):
                 one_pass_entities = one_pass_entities + " " + entity_category_scrape
                 break
             obj.all_one_pass_entity_categories[key] = one_pass_entities
-    
+
         scrolled_text_widget.insert(tk.END, obj.all_one_pass_entity_categories)
+
+    # task 7
+    if idx == 6:
+        cosine_results_list = []
+
+        obj.corpus_creation(obj.all_one_pass_entity_categories, "keywords_2")
+        for pair in list(combinations(list(obj.one_pass_entity_list_corpus), 2)):
+            tfidf_results = obj.vectorizer(obj.one_pass_entity_list_corpus[pair[0]],
+                                    obj.one_pass_entity_list_corpus[pair[1]])
+            cosine_results = obj.calculate_cosine_similarity(
+                obj.one_pass_entity_list_corpus[pair[0]],
+                obj.one_pass_entity_list_corpus[pair[1]])
+            cosine_results_list.append(cosine_results)
+
+        scrolled_text_widget.insert(tk.END, 'Cosine similarity results:\n\n')
+        scrolled_text_widget.insert(tk.END, list(combinations(list(obj.one_pass_entity_list_corpus), 2)))
+        scrolled_text_widget.insert(tk.END, '\n')
+        scrolled_text_widget.insert(tk.END, cosine_results_list)
 
 
     scrolled_text_widget.configure(state='disabled')
