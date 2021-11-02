@@ -180,7 +180,7 @@ def button_clicked(scrolled_text_widget, idx):
 
     # task 9
     if idx == 8:
-        n_news_forum_articles = 2
+        n_news_forum_articles = 250
 
         scrolled_text_widget.insert(tk.END, 'Start retrieving articles now ...')
         scrolled_text_widget.insert(tk.END, '\n\n')
@@ -193,6 +193,15 @@ def button_clicked(scrolled_text_widget, idx):
         )
 
         obj.display_word_cloud_represenations(obj.news_forum_data)
+
+    # task 10
+    if idx == 9:
+        obj.calc_tfidf_scores_news_forum(obj.news_forum_data)
+
+        tmp = obj.calc_tfidf_scores_news_forum(obj.news_forum_data)
+        for data in tmp:
+            scrolled_text_widget.insert(tk.END, data)
+            scrolled_text_widget.insert(tk.END, '\n')
 
 
     scrolled_text_widget.configure(state='disabled')
