@@ -21,6 +21,7 @@ import matplotlib.pyplot as plt
 import math
 import os
 import psutil
+from gensim.models import KeyedVectors
 from utils import Utils # import from own class
 
 
@@ -149,14 +150,20 @@ for pair in list(combinations(list(obj.one_pass_entity_list_corpus), 2)):
 
 #print('memory use:', memoryUse)
 
-# Task 8
-# word2vec
+# Task 8: Give the pairwise similarity scores for the keywords using a pre-trained word2vec model
+# place file in local user's download folder; can be downloaded from here: https://s3.amazonaws.com/dl4j-distribution/GoogleNews-vectors-negative300.bin.gz
+word2vec_model_file_path = '~/Downloads/GoogleNews-vectors-negative300.bin'
+keywords = ['nature', 'pollution', 'sustainability', 'environmental']
+word2vec_scores = obj.calc_word2vec_scores(keywords, word2vec_model_file_path)
 
-# Task 9
-# news keywords
+# Task 9: Retrieve news forum data, process it and show word cloud presentations
+n_news_forum_articles = 2 
+obj.retrieve_articles(n_news_forum_articles, obj.news_forum_data)
+obj.display_word_cloud_represenations(obj.news_forum_data)
 
-# Task 10 (repeat)
-# repeat use of tfidf
-
-# Task 12
-# suggest a GUI
+# Task 10: Calculate the Tf-Idf scores for each keyword pair for each time period based on the news forum data
+print('check data first:\n')
+print(obj.news_forum_data['nature']['2001-2004']['doc'])
+print(obj.news_forum_data['pollution']['2001-2004']['doc'])
+print(obj.news_forum_data)
+obj.calc_tfidf_scores_news_forum(obj.news_forum_data)

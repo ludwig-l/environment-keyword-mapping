@@ -414,8 +414,7 @@ class Utils:
 
 
     ### Calculate the word2vec similarity score using a pre-trained model ###
-    def calc_word2vec_scores(self, file_path):
-        keywords = ['nature', 'pollution', 'sustainability', 'environmental']
+    def calc_word2vec_scores(self, keywords, file_path):
         model = KeyedVectors.load_word2vec_format(file_path, binary=True)
         scores = []
         for pair in list(combinations(keywords, 2)):
@@ -487,7 +486,7 @@ class Utils:
 
 
     ### Calculate the Tf-Idf scores based on input data ###
-    def calc_tfidf_scores(self, data_struct):
+    def calc_tfidf_scores_news_forum(self, data_struct):
 
         # now compute the score for all the possible pairs
         scores = []
