@@ -200,6 +200,17 @@ def button_clicked(scrolled_text_widget, idx):
         scrolled_text_widget.insert(tk.END, '\n')
         scrolled_text_widget.insert(tk.END, cosine_results_list)
 
+    # task 5
+    if idx == 4:
+        pair_words = ['nature', 'pollution', 'sustainability', 'environment']
+        all_wupalmer_results = array.array('d', [])
+        for pair in combinations(pair_words, 2):
+            all_wupalmer_results.append(obj.calculate_wupalmer(pair[0], pair[1]))
+
+        scrolled_text_widget.insert(tk.END, list(combinations(pair_words, 2)))
+        scrolled_text_widget.insert(tk.END, '\n')
+        scrolled_text_widget.insert(tk.END, all_wupalmer_results)
+
 
     scrolled_text_widget.configure(state='disabled')
 
