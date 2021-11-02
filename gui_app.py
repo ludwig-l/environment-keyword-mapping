@@ -178,6 +178,22 @@ def button_clicked(scrolled_text_widget, idx):
 
         scrolled_text_widget.insert(tk.END, word2vec_scores)
 
+    # task 9
+    if idx == 8:
+        n_news_forum_articles = 2
+
+        scrolled_text_widget.insert(tk.END, 'Start retrieving articles now ...')
+        scrolled_text_widget.insert(tk.END, '\n\n')
+
+        obj.retrieve_articles(n_news_forum_articles, obj.news_forum_data)
+
+        scrolled_text_widget.insert(
+            tk.END,
+            'Word cloud representations will open in a separate window but will also be stored as a file in the main directory.'
+        )
+
+        obj.display_word_cloud_represenations(obj.news_forum_data)
+
 
     scrolled_text_widget.configure(state='disabled')
 
