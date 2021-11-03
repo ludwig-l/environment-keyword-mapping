@@ -336,29 +336,37 @@ class Utils:
     ### Combining preprocessed and lemmatized documents into a corpus (Task 2A, 3A, 4A) ###
     def corpus_creation(self, unprocessed_documents, type):
         corpus = ""
+        full_text_corpus = ""
         if type == "pages":
             for key in unprocessed_documents:
                 document = unprocessed_documents[key]
-                corpus = corpus + self.preprocess_and_lemmatize(document)
+                corpus = self.preprocess_and_lemmatize(document)
                 self.single_document_corpus[key]= corpus
-            self.all_document_corpus = corpus
+                full_text_corpus = full_text_corpus + corpus
+                corpus = ""
+            self.all_document_corpus = self.all_document_corpus + full_text_corpus
         elif type == "subsections":
             for key in self.page_subsections:
                 for list in self.page_subsections[key]:
                     all_sections = self.get_sections(list.sections)
-                    corpus = corpus + " " + self.preprocess_and_lemmatize(all_sections)
+                    corpus = corpus + self.preprocess_and_lemmatize(all_sections)
                 self.subsections_corpus[key] = corpus
-            self.all_document_corpus = corpus
+                full_text_corpus = full_text_corpus + corpus
+                corpus = ""
+            self.all_document_corpus = self.all_document_corpus + full_text_corpus
         elif type == "keywords":
             for key in self.page_entities_list:
                 for title in self.page_entities_list[key]:
-                    corpus = corpus + " " + self.preprocess_and_lemmatize(title)
+                    corpus = corpus + self.preprocess_and_lemmatize(title)
                 self.entity_list_corpus[key] = corpus
-            self.all_document_corpus = corpus
+                full_text_corpus = full_text_corpus + corpus
+                corpus = ""
+            self.all_document_corpus = self.all_document_corpus + full_text_corpus
         else:
             for key in self.all_one_pass_entity_categories:
-                corpus = corpus + " " + self.preprocess_and_lemmatize(self.all_one_pass_entity_categories[key])
+                corpus = self.preprocess_and_lemmatize(self.all_one_pass_entity_categories[key])
                 self.one_pass_entity_list_corpus[key] = corpus
+                corpus = ""
 
 
     ### TfidfVectorizer creation (Task 2B, 3B, 4B) ###
@@ -370,8 +378,8 @@ class Utils:
         # print the top 10 most used words from the tfidf results
         importance = np.argsort(np.asarray(vectors.sum(axis=0)).ravel())[::-1]
         tfidf_feature_names = np.array(vectorizer.get_feature_names_out())
-        #print("MOST")
-        #print(tfidf_feature_names[importance[:10]])
+        print("MOST")
+        print(tfidf_feature_names[importance[:10]])
 
         # print the top 10 least used words from the tfidf results
         unimportance = np.argsort(np.asarray(vectors.sum(axis=0)).ravel())[::1]

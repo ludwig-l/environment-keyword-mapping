@@ -52,8 +52,8 @@ for pair in list(combinations(list(obj.single_document_corpus), 2)):
     obj.cosine_result = obj.calculate_cosine_similarity(
         obj.single_document_corpus[pair[0]],
         obj.single_document_corpus[pair[1]])
-    #print(pair[0] + " " + pair[1])
-    #print(cosine_result)
+    print(pair[0] + " " + pair[1])
+    print(obj.cosine_result)
 
 # Task 3: Repeat but with the titles of subsections
 for pair in list(combinations(list(obj.subsections_corpus), 2)):
