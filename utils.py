@@ -511,9 +511,18 @@ class Utils:
 
                 print('---', year) # progress information
 
-                # define the two needed datetime objects
-                date_begin = datetime.datetime.fromisoformat(year[:4] + '-01-01')
-                date_end = datetime.datetime.fromisoformat(year[5:] + '-12-31')
+                if year == 'deepwater_horizon':
+                    date_begin = datetime.datetime.fromisoformat('2010-04-20')
+                    date_end = datetime.datetime.fromisoformat('2010-05-03')
+
+                elif year == 'climate_agreement_withdrawal':
+                    date_begin = datetime.datetime.fromisoformat('2017-06-01')
+                    date_end = datetime.datetime.fromisoformat('2017-06-14')
+
+                else:
+                    # define the two needed datetime objects
+                    date_begin = datetime.datetime.fromisoformat(year[:4] + '-01-01')
+                    date_end = datetime.datetime.fromisoformat(year[5:] + '-12-31')
 
                 # API call for the desired information
                 retrieved_articles = nyt.article_search(
