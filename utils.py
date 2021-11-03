@@ -89,6 +89,22 @@ class Utils:
                     'lead_paragraphs' : [],
                     'doc' : ''
                 },
+                'deepwater_horizon' : {
+                    'titles' : [],
+                    'urls' : [],
+                    'abstracts' : [],
+                    'snippets' : [],
+                    'lead_paragraphs' : [],
+                    'doc' : ''
+                },
+                'climate_agreement_withdrawal' : {
+                    'titles' : [],
+                    'urls' : [],
+                    'abstracts' : [],
+                    'snippets' : [],
+                    'lead_paragraphs' : [],
+                    'doc' : ''
+                },
             },
             'pollution' : {
                 '2001-2004' : {
@@ -124,6 +140,22 @@ class Utils:
                     'doc' : ''
                 },
                 '2017-2020' : {
+                    'titles' : [],
+                    'urls' : [],
+                    'abstracts' : [],
+                    'snippets' : [],
+                    'lead_paragraphs' : [],
+                    'doc' : ''
+                },
+                'deepwater_horizon' : {
+                    'titles' : [],
+                    'urls' : [],
+                    'abstracts' : [],
+                    'snippets' : [],
+                    'lead_paragraphs' : [],
+                    'doc' : ''
+                },
+                'climate_agreement_withdrawal' : {
                     'titles' : [],
                     'urls' : [],
                     'abstracts' : [],
@@ -173,6 +205,22 @@ class Utils:
                     'lead_paragraphs' : [],
                     'doc' : ''
                 },
+                'deepwater_horizon' : {
+                    'titles' : [],
+                    'urls' : [],
+                    'abstracts' : [],
+                    'snippets' : [],
+                    'lead_paragraphs' : [],
+                    'doc' : ''
+                },
+                'climate_agreement_withdrawal' : {
+                    'titles' : [],
+                    'urls' : [],
+                    'abstracts' : [],
+                    'snippets' : [],
+                    'lead_paragraphs' : [],
+                    'doc' : ''
+                },
             },
             'environmentally friendly' : {
                 '2001-2004' : {
@@ -208,6 +256,22 @@ class Utils:
                     'doc' : ''
                 },
                 '2017-2020' : {
+                    'titles' : [],
+                    'urls' : [],
+                    'abstracts' : [],
+                    'snippets' : [],
+                    'lead_paragraphs' : [],
+                    'doc' : ''
+                },
+                'deepwater_horizon' : {
+                    'titles' : [],
+                    'urls' : [],
+                    'abstracts' : [],
+                    'snippets' : [],
+                    'lead_paragraphs' : [],
+                    'doc' : ''
+                },
+                'climate_agreement_withdrawal' : {
                     'titles' : [],
                     'urls' : [],
                     'abstracts' : [],
