@@ -117,7 +117,7 @@ keywords = ['nature', 'pollution', 'sustainability', 'environmental']
 word2vec_scores = obj.calc_word2vec_scores(keywords, word2vec_model_file_path)
 
 # Task 9: Retrieve news forum data, process it and show word cloud presentations
-n_news_forum_articles = 2 
+n_news_forum_articles = 250
 obj.retrieve_articles(n_news_forum_articles, obj.news_forum_data)
 obj.display_word_cloud_represenations(obj.news_forum_data)
 
