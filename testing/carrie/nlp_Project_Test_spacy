@@ -1,0 +1,50 @@
+!pip3 install wikipedia-api
+!pip3 install wikipedia
+!pip3 install -U spacy
+
+import numpy as np
+import nltk
+import wikipedia
+
+import spacy
+nlp = spacy.load('en_core_web_sm')
+
+from spacy import displacy
+
+# retrive all information https://stackabuse.com/python-for-nlp-working-with-facebook-fasttext-library/
+nature = wikipedia.page("nature")
+title = nature.title
+categories = nature.categories
+content = nature.content
+links = nature.links
+references = nature.references
+summary = nature.summary
+
+# print all information about Nature
+# print("Page content:\n", content, "\n")
+print("Page title:", title, "\n")
+# print("Categories:", categories, "\n")
+# print("Links:", links, "\n")
+# print("References:", references, "\n")
+# print("Summary:", summary, "\n")
+
+# perform tokenization
+doc = nlp(content)
+
+
+for token in doc:
+    print(token.text, end=' | ')
+    
+# testing out entity recogniser
+displacy.render(doc, style='ent', jupyter=True)
+
+# Perform Stemming here - using snowball stemmer
+from nltk.stem.snowball import SnowballStemmer
+# Snowball Stemmer requires to pass a language parameter
+s_stemmer = SnowballStemmer(language='english')
+
+for token in doc:
+#     print(token.text, '\t', token.pos_, '\t', token.lemma, '\t', token.lemma_)
+    print(token.text, '\t', token.pos_, '\t', token.lemma_)
+    
+displacy.render(doc, style='ent', jupyter=True)
